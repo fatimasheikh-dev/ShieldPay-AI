@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldPay AI | Login</title>
+</head>
+
+<body>
+
+    <h1>ShieldPay AI</h1>
+
+    <h2>Welcome Back</h2>
+    {% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+
+{% if success %}
+    <p>{{ success }}</p>
+{% endif %}
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" required>
+
+        <br><br>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="/accounts/signup/">Create Account</a>
+    </p>
+
+    <footer>
+        Designed by Fatima Sheikh
+    </footer>
+
+</body>
+</html>

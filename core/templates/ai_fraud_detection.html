@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ShieldPay AI | Transaction History</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #0b1f3a;
+            color: white;
+            padding: 22px 7%;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            margin-top: 5px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        main {
+            width: 92%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #0b1f3a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #667085;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th {
+            background: #0b1f3a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eaecf0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .safe {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .suspicious {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .fraudulent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .risk {
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #667085;
+        }
+
+        .security-note {
+            margin-top: 25px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #eef4ff;
+            color: #475467;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        ShieldPay AI
+    </div>
+
+    <div class="tagline">
+        AI-Powered Transaction Protection
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <a
+        class="back"
+        href="/"
+    >
+        ← Back to Dashboard
+    </a>
+
+
+    <div class="card">
+
+
+        <h1>
+            📋 Transaction History
+        </h1>
+
+
+        <p class="description">
+
+            Review previously analyzed transactions,
+            their AI risk scores, and fraud classifications.
+
+        </p>
+
+
+        {% if transactions %}
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Receiver
+                        </th>
+
+                        <th>
+                            Bank
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Risk
+                        </th>
+
+                        <th>
+                            Result
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for transaction in transactions %}
+
+
+                    <tr>
+
+                        <td>
+                            {{ transaction.created_at|date:"d M Y, h:i A" }}
+                        </td>
+
+                        <td>
+                            {{ transaction.amount }}
+                        </td>
+
+                        <td>
+                            {{ transaction.receiver_name }}
+                        </td>
+
+                        <td>
+                            {{ transaction.bank }}
+                        </td>
+
+                        <td>
+                            {{ transaction.transaction_type }}
+                        </td>
+
+                        <td class="risk">
+                            {{ transaction.risk_score }}%
+                        </td>
+
+                        <td>
+
+
+                            {% if transaction.result == "SAFE" %}
+
+                                <span class="badge safe">
+                                    ✓ SAFE
+                                </span>
+
+
+                            {% elif transaction.result == "SUSPICIOUS" %}
+
+                                <span class="badge suspicious">
+                                    ⚠ SUSPICIOUS
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge fraudulent">
+                                    ✕ FRAUDULENT
+                                </span>
+
+                            {% endif %}
+
+
+                        </td>
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty">
+
+            <h2>
+                No Transactions Yet
+            </h2>
+
+            <p>
+                Analyze a transaction to see its result here.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+        <div class="security-note">
+
+            🛡️ <strong>Security Notice:</strong>
+
+            Transaction history is generated from
+            ShieldPay AI's stored analysis records.
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+<footer>
+
+    Designed by Fatima Sheikh
+
+</footer>
+
+
+</body>
+
+</html>

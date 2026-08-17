@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ShieldPay AI - Recovery Center</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            border: 1px solid #475569;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 45px 20px 25px;
+        }
+
+        .sos {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #f43f5e;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* STATISTICS */
+
+        .stats-grid {
+            width: 86%;
+            max-width: 1150px;
+            margin: 15px auto 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow:
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+        }
+
+        .stat-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            flex-shrink: 0;
+        }
+
+        .stat-card span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card h2 {
+            font-size: 28px;
+        }
+
+        /* MAIN */
+
+        .container {
+            width: 86%;
+            max-width: 1150px;
+            margin: 0 auto 50px;
+        }
+
+        .section-title {
+            font-size: 25px;
+            margin: 30px 0 18px;
+        }
+
+        /* SEARCH */
+
+        .filter-box {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow:
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 240px;
+            padding: 14px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #0284c7;
+        }
+
+        .filter-select {
+            padding: 14px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background: white;
+            font-size: 15px;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .search-btn {
+            padding: 14px 24px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #0369a1;
+        }
+
+        .clear-btn {
+            padding: 14px 20px;
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .clear-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .active-filter {
+            margin-top: 14px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .active-filter strong {
+            color: #0284c7;
+        }
+
+        /* CASE CARD */
+
+        .case-card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+        }
+
+        .case-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .case-id {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .progress {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 11px;
+        }
+
+        .info-box strong {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .description {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 11px;
+            margin-top: 18px;
+            line-height: 1.6;
+        }
+
+        .case-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .date {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .view-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #0284c7;
+            color: white;
+            padding: 13px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .view-btn:hover {
+            background: #0369a1;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            background: white;
+            padding: 50px;
+            border-radius: 18px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        /* SECURITY */
+
+        .security {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #78350f;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 25px;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .designer {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid {
+                width: 92%;
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .case-card {
+                padding: 20px;
+            }
+
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input,
+            .filter-select,
+            .search-btn,
+            .clear-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        🛡️ Shield<span>Pay</span> AI
+    </div>
+
+    <a
+        href="/"
+        class="back"
+    >
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="sos">
+        SOS
+    </div>
+
+    <h1>
+        Recovery Center
+    </h1>
+
+    <p>
+        Manage and track your reported fraud
+        recovery cases.
+    </p>
+
+</section>
+
+
+<!-- STATISTICS -->
+
+<div class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📁
+        </div>
+
+        <div>
+
+            <span>
+                Total Cases
+            </span>
+
+            <h2>
+                {{ total_cases }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ⏳
+        </div>
+
+        <div>
+
+            <span>
+                Pending
+            </span>
+
+            <h2>
+                {{ pending_cases }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🔄
+        </div>
+
+        <div>
+
+            <span>
+                In Progress
+            </span>
+
+            <h2>
+                {{ in_progress_cases }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✅
+        </div>
+
+        <div>
+
+            <span>
+                Resolved
+            </span>
+
+            <h2>
+                {{ resolved_cases }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<main class="container">
+
+
+    <!-- SEARCH & FILTER -->
+
+    <div class="filter-box">
+
+        <form
+            method="GET"
+            class="filter-form"
+        >
+
+            <input
+                type="text"
+                name="search"
+                class="search-input"
+                placeholder="🔎 Search Case ID, Transaction ID, Bank..."
+                value="{{ search_query }}"
+            >
+
+
+            <select
+                name="status"
+                class="filter-select"
+            >
+
+                <option
+                    value="ALL"
+                    {% if status_filter == "ALL" %}
+                        selected
+                    {% endif %}
+                >
+                    📂 All Cases
+                </option>
+
+
+                <option
+                    value="PENDING"
+                    {% if status_filter == "PENDING" %}
+                        selected
+                    {% endif %}
+                >
+                    ⏳ Pending
+                </option>
+
+
+                <option
+                    value="IN_PROGRESS"
+                    {% if status_filter == "IN_PROGRESS" %}
+                        selected
+                    {% endif %}
+                >
+                    🔄 In Progress
+                </option>
+
+
+                <option
+                    value="RESOLVED"
+                    {% if status_filter == "RESOLVED" %}
+                        selected
+                    {% endif %}
+                >
+                    ✅ Resolved
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="search-btn"
+            >
+                🔎 Search
+            </button>
+
+
+            <a
+                href="/recovery-center/"
+                class="clear-btn"
+            >
+                Clear
+            </a>
+
+        </form>
+
+
+        {% if search_query or status_filter != "ALL" %}
+
+            <div class="active-filter">
+
+                Active filters:
+
+                {% if search_query %}
+
+                    Search:
+                    <strong>
+                        {{ search_query }}
+                    </strong>
+
+                {% endif %}
+
+
+                {% if status_filter != "ALL" %}
+
+                    | Status:
+                    <strong>
+                        {{ status_filter }}
+                    </strong>
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <h2 class="section-title">
+        📂 Recovery Cases
+    </h2>
+
+
+    {% if incidents %}
+
+
+        {% for incident in incidents %}
+
+
+        <div class="case-card">
+
+
+            <div class="case-top">
+
+                <div class="case-id">
+
+                    🆔
+                    {{ incident.case_id }}
+
+                </div>
+
+
+                {% if incident.status == "PENDING" %}
+
+                    <span class="badge pending">
+                        ⏳ PENDING
+                    </span>
+
+                {% elif incident.status == "IN_PROGRESS" %}
+
+                    <span class="badge progress">
+                        🔄 IN PROGRESS
+                    </span>
+
+                {% elif incident.status == "RESOLVED" %}
+
+                    <span class="badge resolved">
+                        ✅ RESOLVED
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="info-grid">
+
+
+                <div class="info-box">
+
+                    <strong>
+                        INCIDENT TYPE
+                    </strong>
+
+                    {{ incident.incident_type }}
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>
+                        TRANSACTION ID
+                    </strong>
+
+                    {{ incident.transaction_id|default:"Not provided" }}
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>
+                        AMOUNT
+                    </strong>
+
+                    {% if incident.amount %}
+
+                        {{ incident.amount }}
+
+                    {% else %}
+
+                        Not provided
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>
+                        BANK / PROVIDER
+                    </strong>
+
+                    {{ incident.bank|default:"Not provided" }}
+
+                </div>
+
+
+            </div>
+
+
+            <div class="description">
+
+                <strong>
+                    Incident Description
+                </strong>
+
+                <br><br>
+
+                {{ incident.description }}
+
+            </div>
+
+
+            <div class="case-bottom">
+
+                <div class="date">
+
+                    📅
+                    {{ incident.created_at|date:"d M Y, H:i" }}
+
+                </div>
+
+
+                <a
+                    href="/recovery-case/{{ incident.case_id }}/"
+                    class="view-btn"
+                >
+                    🔎 View Case
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="empty">
+
+            <div style="font-size: 50px;">
+                🔍
+            </div>
+
+            <h2 style="margin: 15px 0;">
+                No Cases Found
+            </h2>
+
+            <p>
+                Try changing your search or
+                status filter.
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+    <div class="security">
+
+        🛡️
+
+        <strong>
+            Security Reminder:
+        </strong>
+
+        ShieldPay AI will never ask you for
+        your password, PIN, OTP, CVV, or other
+        authentication credentials.
+
+    </div>
+
+
+</main>
+
+
+<footer>
+
+    Designed by
+
+    <span class="designer">
+        Fatima Sheikh
+    </span>
+
+</footer>
+
+
+</body>
+
+</html>

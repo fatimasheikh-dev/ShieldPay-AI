@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShieldPay AI | Transaction Checker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #0b1f3a;
+            color: white;
+            padding: 22px 7%;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        main {
+            width: 90%;
+            max-width: 850px;
+            margin: 45px auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #0b1f3a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #667085;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .check-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #0b1f3a;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            background: #eef4ff;
+            border: 1px solid #d0d5dd;
+        }
+
+        .result-box h2 {
+            margin-bottom: 12px;
+        }
+
+        .result {
+            margin-top: 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .risk-score {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .breakdown {
+            margin-top: 25px;
+        }
+
+        .breakdown h3 {
+            margin-bottom: 15px;
+        }
+
+        .risk-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px;
+            margin-bottom: 8px;
+            background: white;
+            border: 1px solid #e4e7ec;
+            border-radius: 8px;
+        }
+
+        .risk-value {
+            font-weight: bold;
+        }
+
+        .security-note {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+                padding: 25px;
+            }
+
+            main {
+                width: 92%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ShieldPay AI
+    </div>
+
+    <div class="tagline">
+        AI-Powered Transaction Protection
+    </div>
+
+</header>
+
+
+<main>
+
+    <a class="back" href="/">
+        ← Back to Dashboard
+    </a>
+
+
+    <div class="card">
+
+        <h1>
+            💳 Transaction Fraud Checker
+        </h1>
+
+        <p class="description">
+            Enter the transaction details below. ShieldPay AI
+            will analyze the transaction and calculate a
+            fraud-risk assessment.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label>Transaction Amount</label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    placeholder="Enter amount"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Receiver Name</label>
+
+                <input
+                    type="text"
+                    name="receiver_name"
+                    placeholder="Enter receiver name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Receiver Account / Number</label>
+
+                <input
+                    type="text"
+                    name="receiver_account"
+                    placeholder="Enter account or payment number"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Bank / Payment Service</label>
+
+                <input
+                    type="text"
+                    name="bank"
+                    placeholder="Enter bank or payment service"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Transaction Type</label>
+
+                <select name="transaction_type" required>
+
+                    <option value="">
+                        Select transaction type
+                    </option>
+
+                    <option value="bank_transfer">
+                        Bank Transfer
+                    </option>
+
+                    <option value="mobile_wallet">
+                        Mobile Wallet
+                    </option>
+
+                    <option value="card_payment">
+                        Card Payment
+                    </option>
+
+                    <option value="online_payment">
+                        Online Payment
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Transaction Purpose</label>
+
+                <input
+                    type="text"
+                    name="purpose"
+                    placeholder="e.g. Shopping, tuition, personal transfer"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="check-button"
+            >
+                🔍 Analyze Transaction
+            </button>
+
+        </form>
+
+
+        {% if message %}
+
+        <div class="result-box">
+
+            <h2>
+                🛡️ ShieldPay AI Result
+            </h2>
+
+            <p>
+                {{ message }}
+            </p>
+
+
+            {% if result %}
+
+            <div class="result">
+                Result: {{ result }}
+            </div>
+
+            <div class="risk-score">
+                Risk Score: {{ risk_score }}%
+            </div>
+
+
+            {% if risk_details %}
+
+            <div class="breakdown">
+
+                <h3>
+                    🔎 Risk Factor Breakdown
+                </h3>
+
+
+                <div class="risk-item">
+
+                    <span>
+                        💰 Amount Risk
+                    </span>
+
+                    <span class="risk-value">
+                        +{{ risk_details.amount_risk }}
+                    </span>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <span>
+                        👤 Receiver Name Risk
+                    </span>
+
+                    <span class="risk-value">
+                        +{{ risk_details.receiver_risk }}
+                    </span>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <span>
+                        🏦 Account Risk
+                    </span>
+
+                    <span class="risk-value">
+                        +{{ risk_details.account_risk }}
+                    </span>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <span>
+                        📱 Transaction Type Risk
+                    </span>
+
+                    <span class="risk-value">
+                        +{{ risk_details.type_risk }}
+                    </span>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <span>
+                        🎯 Purpose Risk
+                    </span>
+
+                    <span class="risk-value">
+                        +{{ risk_details.purpose_risk }}
+                    </span>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="security-note">
+
+            🛡️ <strong>Security Notice:</strong>
+
+            ShieldPay AI provides a risk assessment based on
+            information available to the system. It is not a
+            guaranteed determination of fraud.
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    Designed by Fatima Sheikh
+
+</footer>
+
+
+</body>
+
+</html>

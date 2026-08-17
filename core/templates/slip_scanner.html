@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ShieldPay AI | Payment Slip Scanner</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #0b1f3a;
+            color: white;
+            padding: 22px 7%;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            margin-top: 5px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        main {
+            width: 90%;
+            max-width: 950px;
+            margin: 40px auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            text-decoration: none;
+            color: #0b1f3a;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.07);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .intro {
+            color: #667085;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .upload-box h3 {
+            margin-bottom: 8px;
+        }
+
+        .upload-box p {
+            color: #667085;
+        }
+
+        input[type="file"] {
+            margin: 22px 0;
+            max-width: 100%;
+        }
+
+        .scan-btn {
+            display: block;
+            margin: 10px auto 0;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            background: #0b1f3a;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .scan-btn:hover {
+            opacity: 0.9;
+        }
+
+        .message {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eef4ff;
+            border-radius: 10px;
+            color: #344054;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+        }
+
+        .result h2 {
+            margin-bottom: 15px;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e4e7ec;
+            line-height: 1.6;
+            color: #344054;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            color: #7c2d12;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        ShieldPay AI
+    </div>
+
+    <div class="tagline">
+        AI-Powered Transaction Protection
+    </div>
+
+</header>
+
+
+<main>
+
+    <a
+        href="/"
+        class="back"
+    >
+        ← Back to Dashboard
+    </a>
+
+
+    <div class="card">
+
+        <h1>
+            📷 Payment Slip Scanner
+        </h1>
+
+        <p class="intro">
+            Upload a payment receipt or transaction slip.
+            ShieldPay AI will scan the image and extract
+            visible transaction information using OCR.
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="upload-box">
+
+                <div class="upload-icon">
+                    📄
+                </div>
+
+                <h3>
+                    Upload Payment Slip
+                </h3>
+
+                <p>
+                    Supported formats: JPG, JPEG, PNG
+                </p>
+
+
+                <input
+                    type="file"
+                    name="slip_image"
+                    accept=".jpg,.jpeg,.png"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="scan-btn"
+                >
+                    🔍 Scan Payment Slip
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if message %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endif %}
+
+
+        {% if extracted_text %}
+
+            <div class="result">
+
+                <h2>
+                    🧠 Extracted Information
+                </h2>
+
+                <pre>{{ extracted_text }}</pre>
+
+
+                <div class="note">
+
+                    🛡️ <strong>Security Notice:</strong>
+
+                    OCR only reads visible text from the
+                    uploaded image. Always verify important
+                    payment information with the original
+                    receipt and your bank/payment provider.
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    Designed by Fatima Sheikh
+
+</footer>
+
+
+</body>
+
+</html>
