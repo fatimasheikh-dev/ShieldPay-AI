@@ -1,378 +1,684 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+ShieldPay AI - AI Fraud Detection
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block extra_css %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<style>
 
-    <title>ShieldPay AI | Transaction History</title>
+    .ai-page {
+        width: 88%;
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 45px 0 60px;
+    }
 
-    <style>
+    .ai-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+    .ai-icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e0f2fe;
+        border-radius: 22px;
+        font-size: 38px;
+        box-shadow: 0 8px 22px rgba(2, 132, 199, 0.10);
+    }
+
+    .ai-header h1 {
+        font-size: 36px;
+        margin-bottom: 9px;
+    }
+
+    .ai-header p {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .ai-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .ai-card {
+        background: white;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+    .ai-card h2 {
+        font-size: 21px;
+        margin-bottom: 22px;
+    }
+
+    .ai-form-group {
+        margin-bottom: 18px;
+    }
+
+    .ai-form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #334155;
+    }
+
+    .ai-input,
+    .ai-select {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+        color: #172033;
+    }
+
+    .ai-input:focus,
+    .ai-select:focus {
+        border-color: #0284c7;
+        box-shadow:
+            0 0 0 3px
+            rgba(2, 132, 199, 0.10);
+    }
+
+    .ai-button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #0284c7;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .ai-button:hover {
+        background: #0369a1;
+        transform: translateY(-1px);
+    }
+
+    .ai-info {
+        margin-top: 25px;
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    .ai-info h3 {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .ai-info p {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .result-panel {
+        text-align: center;
+    }
+
+    .result-icon {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+    }
+
+    .ready-icon {
+        background: #e0f2fe;
+    }
+
+    .low-icon {
+        background: #dcfce7;
+    }
+
+    .medium-icon {
+        background: #fef3c7;
+    }
+
+    .high-icon {
+        background: #fee2e2;
+    }
+
+    .result-panel h2 {
+        font-size: 25px;
+        margin-bottom: 8px;
+    }
+
+    .risk-score {
+        font-size: 50px;
+        font-weight: 800;
+        margin: 15px 0 3px;
+    }
+
+    .score-label {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .risk-bar {
+        height: 13px;
+        width: 100%;
+        background: #e2e8f0;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .risk-fill {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.5s ease;
+    }
+
+    .low-fill {
+        background: #22c55e;
+    }
+
+    .medium-fill {
+        background: #f59e0b;
+    }
+
+    .high-fill {
+        background: #ef4444;
+    }
+
+    .result-box {
+        margin-top: 22px;
+        padding: 16px;
+        border-radius: 11px;
+        font-size: 14px;
+        line-height: 1.7;
+        text-align: left;
+    }
+
+    .low-risk {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .medium-risk {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .high-risk {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .waiting {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .analysis-details {
+        margin-top: 24px;
+        text-align: left;
+    }
+
+    .analysis-details h3 {
+        font-size: 16px;
+        margin-bottom: 14px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 13px;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #64748b;
+    }
+
+    .detail-value {
+        font-weight: bold;
+        color: #172033;
+        text-align: right;
+    }
+
+    .security-note {
+        margin-top: 25px;
+        padding: 15px;
+        border-radius: 11px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: left;
+    }
+
+    @media (max-width: 800px) {
+
+        .ai-grid {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
-        }
+    }
 
-        header {
-            background: #0b1f3a;
-            color: white;
-            padding: 22px 7%;
-        }
+    @media (max-width: 600px) {
 
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-        }
-
-        .tagline {
-            margin-top: 5px;
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        main {
+        .ai-page {
             width: 92%;
-            max-width: 1200px;
-            margin: 40px auto;
+            padding-top: 28px;
         }
 
-        .back {
-            display: inline-block;
-            margin-bottom: 25px;
-            color: #0b1f3a;
-            text-decoration: none;
-            font-weight: bold;
+        .ai-header h1 {
+            font-size: 29px;
         }
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        .ai-card {
+            padding: 20px;
         }
 
-        h1 {
-            font-size: 30px;
-            margin-bottom: 10px;
+        .risk-score {
+            font-size: 42px;
         }
 
-        .description {
-            color: #667085;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
+    }
 
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
+</style>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 850px;
-        }
+{% endblock %}
 
-        th {
-            background: #0b1f3a;
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-size: 14px;
-        }
+{% block content %}
 
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #eaecf0;
-            font-size: 14px;
-        }
+<div class="ai-page">
 
-        tr:hover {
-            background: #f8fafc;
-        }
+```
+<div class="ai-header">
 
-        .badge {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .safe {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .suspicious {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .fraudulent {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .risk {
-            font-weight: bold;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: #667085;
-        }
-
-        .security-note {
-            margin-top: 25px;
-            padding: 16px;
-            border-radius: 10px;
-            background: #eef4ff;
-            color: #475467;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #667085;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-
-            .card {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 25px;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<header>
-
-    <div class="logo">
-        ShieldPay AI
+    <div class="ai-icon">
+        🤖
     </div>
 
-    <div class="tagline">
-        AI-Powered Transaction Protection
-    </div>
+    <h1>
+        AI Fraud Detection
+    </h1>
 
-</header>
+    <p>
+        Analyze transaction behavior and
+        identify potential fraud risks using
+        ShieldPay AI.
+    </p>
 
+</div>
 
-<main>
 
+<div class="ai-grid">
 
-    <a
-        class="back"
-        href="/"
-    >
-        ← Back to Dashboard
-    </a>
 
+    <!-- INPUT CARD -->
 
-    <div class="card">
+    <div class="ai-card">
 
+        <h2>
+            🧠 Transaction Analysis
+        </h2>
 
-        <h1>
-            📋 Transaction History
-        </h1>
 
+        <form method="POST">
 
-        <p class="description">
+            {% csrf_token %}
 
-            Review previously analyzed transactions,
-            their AI risk scores, and fraud classifications.
 
-        </p>
+            <div class="ai-form-group">
 
+                <label>
+                    Transaction Amount
+                </label>
 
-        {% if transactions %}
+                <input
+                    type="number"
+                    name="amount"
+                    class="ai-input"
+                    placeholder="Enter transaction amount"
+                    min="0"
+                    step="0.01"
+                    required
+                >
 
+            </div>
 
-        <div class="table-container">
 
-            <table>
+            <div class="ai-form-group">
 
-                <thead>
+                <label>
+                    Transaction Type
+                </label>
 
-                    <tr>
+                <select
+                    name="transaction_type"
+                    class="ai-select"
+                >
 
-                        <th>
-                            Date
-                        </th>
+                    <option value="Online">
+                        Online Payment
+                    </option>
 
-                        <th>
-                            Amount
-                        </th>
+                    <option value="Bank Transfer">
+                        Bank Transfer
+                    </option>
 
-                        <th>
-                            Receiver
-                        </th>
+                    <option value="Mobile Wallet">
+                        Mobile Wallet
+                    </option>
 
-                        <th>
-                            Bank
-                        </th>
+                    <option value="Card">
+                        Card Payment
+                    </option>
 
-                        <th>
-                            Type
-                        </th>
+                </select>
 
-                        <th>
-                            Risk
-                        </th>
+            </div>
 
-                        <th>
-                            Result
-                        </th>
 
-                    </tr>
+            <div class="ai-form-group">
 
-                </thead>
+                <label>
+                    Receiver / Merchant
+                </label>
 
+                <input
+                    type="text"
+                    name="receiver"
+                    class="ai-input"
+                    placeholder="Enter receiver or merchant name"
+                >
 
-                <tbody>
+            </div>
 
 
-                    {% for transaction in transactions %}
+            <button
+                type="submit"
+                class="ai-button"
+            >
+                🤖 Run AI Risk Analysis
+            </button>
 
 
-                    <tr>
+        </form>
 
-                        <td>
-                            {{ transaction.created_at|date:"d M Y, h:i A" }}
-                        </td>
 
-                        <td>
-                            {{ transaction.amount }}
-                        </td>
+        <div class="ai-info">
 
-                        <td>
-                            {{ transaction.receiver_name }}
-                        </td>
-
-                        <td>
-                            {{ transaction.bank }}
-                        </td>
-
-                        <td>
-                            {{ transaction.transaction_type }}
-                        </td>
-
-                        <td class="risk">
-                            {{ transaction.risk_score }}%
-                        </td>
-
-                        <td>
-
-
-                            {% if transaction.result == "SAFE" %}
-
-                                <span class="badge safe">
-                                    ✓ SAFE
-                                </span>
-
-
-                            {% elif transaction.result == "SUSPICIOUS" %}
-
-                                <span class="badge suspicious">
-                                    ⚠ SUSPICIOUS
-                                </span>
-
-
-                            {% else %}
-
-                                <span class="badge fraudulent">
-                                    ✕ FRAUDULENT
-                                </span>
-
-                            {% endif %}
-
-
-                        </td>
-
-                    </tr>
-
-
-                    {% endfor %}
-
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        {% else %}
-
-
-        <div class="empty">
-
-            <h2>
-                No Transactions Yet
-            </h2>
+            <h3>
+                🔐 How ShieldPay AI Works
+            </h3>
 
             <p>
-                Analyze a transaction to see its result here.
+                The system evaluates the transaction
+                information and calculates a risk score.
+                A higher score means the transaction
+                requires more attention and verification.
             </p>
 
         </div>
 
 
+    </div>
+
+
+    <!-- RESULT CARD -->
+
+    <div class="ai-card result-panel">
+
+
+        {% if result %}
+
+
+            {% if result == "LOW RISK" %}
+
+                <div class="result-icon low-icon">
+                    🟢
+                </div>
+
+                <h2>
+                    Low Risk
+                </h2>
+
+                <div class="risk-score">
+                    {{ risk_score }}%
+                </div>
+
+                <div class="score-label">
+                    AI Risk Score
+                </div>
+
+                <div class="risk-bar">
+
+                    <div
+                        class="risk-fill low-fill"
+                        style="width: {{ risk_score }}%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="result-box low-risk">
+
+                    <strong>
+                        ✓ Transaction appears relatively safe.
+                    </strong>
+
+                    <br>
+
+                    The available information shows a
+                    low-risk profile. Always verify the
+                    receiver before completing an important
+                    transaction.
+
+                </div>
+
+
+            {% elif result == "MEDIUM RISK" %}
+
+                <div class="result-icon medium-icon">
+                    🟡
+                </div>
+
+                <h2>
+                    Medium Risk
+                </h2>
+
+                <div class="risk-score">
+                    {{ risk_score }}%
+                </div>
+
+                <div class="score-label">
+                    AI Risk Score
+                </div>
+
+                <div class="risk-bar">
+
+                    <div
+                        class="risk-fill medium-fill"
+                        style="width: {{ risk_score }}%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="result-box medium-risk">
+
+                    <strong>
+                        ⚠ Additional verification required.
+                    </strong>
+
+                    <br>
+
+                    Carefully verify the receiver,
+                    transaction details and payment
+                    purpose before proceeding.
+
+                </div>
+
+
+            {% else %}
+
+                <div class="result-icon high-icon">
+                    🔴
+                </div>
+
+                <h2>
+                    High Risk
+                </h2>
+
+                <div class="risk-score">
+                    {{ risk_score }}%
+                </div>
+
+                <div class="score-label">
+                    AI Risk Score
+                </div>
+
+                <div class="risk-bar">
+
+                    <div
+                        class="risk-fill high-fill"
+                        style="width: {{ risk_score }}%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="result-box high-risk">
+
+                    <strong>
+                        🚨 High-risk transaction detected.
+                    </strong>
+
+                    <br>
+
+                    Do not proceed until the receiver
+                    and transaction details have been
+                    carefully verified.
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="analysis-details">
+
+                <h3>
+                    📊 Analysis Summary
+                </h3>
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Detection Status
+                    </span>
+
+                    <span class="detail-value">
+                        {{ result }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Risk Score
+                    </span>
+
+                    <span class="detail-value">
+                        {{ risk_score }}%
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Detection Engine
+                    </span>
+
+                    <span class="detail-value">
+                        ShieldPay AI
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="result-icon ready-icon">
+                🤖
+            </div>
+
+            <h2>
+                AI Ready
+            </h2>
+
+            <div class="result-box waiting">
+
+                Enter the transaction details and
+                click <strong>Run AI Risk Analysis</strong>
+                to receive your risk assessment.
+
+            </div>
+
+
+            <div class="security-note">
+
+                🛡️ <strong>Security Tip:</strong>
+
+                Never share your OTP, PIN, CVV,
+                password or banking credentials
+                with anyone.
+
+            </div>
+
+
         {% endif %}
-
-
-        <div class="security-note">
-
-            🛡️ <strong>Security Notice:</strong>
-
-            Transaction history is generated from
-            ShieldPay AI's stored analysis records.
-
-        </div>
 
 
     </div>
 
 
-</main>
+</div>
+```
 
+</div>
 
-<footer>
-
-    Designed by Fatima Sheikh
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

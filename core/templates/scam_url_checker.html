@@ -1,444 +1,758 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+{% extends "base.html" %}
 
-    <meta charset="UTF-8">
+{% block title %}
+    ShieldPay AI - Scam URL Checker
+{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
 
-    <title>
-        ShieldPay AI | Scam URL Checker
-    </title>
+{% block extra_css %}
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+    .url-page {
+        width: 88%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 45px 0 60px;
+    }
+
+
+    .url-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+
+    .url-icon {
+        width: 76px;
+        height: 76px;
+
+        margin: 0 auto 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eff6ff;
+
+        border-radius: 22px;
+
+        font-size: 38px;
+    }
+
+
+    .url-header h1 {
+        font-size: 36px;
+        margin-bottom: 9px;
+    }
+
+
+    .url-header p {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+
+    .url-grid {
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 25px;
+
+        align-items: start;
+    }
+
+
+    .url-card {
+        background: white;
+
+        border-radius: 18px;
+
+        padding: 28px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+
+    .url-card h2 {
+        font-size: 21px;
+        margin-bottom: 20px;
+    }
+
+
+    .url-input {
+        width: 100%;
+
+        padding: 14px 15px;
+
+        border: 1px solid #cbd5e1;
+
+        border-radius: 10px;
+
+        outline: none;
+
+        font-size: 14px;
+    }
+
+
+    .url-input:focus {
+        border-color: #0284c7;
+
+        box-shadow:
+            0 0 0 3px
+            rgba(2, 132, 199, 0.10);
+    }
+
+
+    .url-help {
+        color: #64748b;
+
+        font-size: 12px;
+
+        margin-top: 8px;
+
+        line-height: 1.5;
+    }
+
+
+    .check-button {
+        width: 100%;
+
+        margin-top: 18px;
+
+        padding: 14px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #0284c7;
+
+        color: white;
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .check-button:hover {
+        background: #0369a1;
+
+        transform: translateY(-1px);
+    }
+
+
+    .result-panel {
+        text-align: center;
+
+        min-height: 360px;
+    }
+
+
+    .result-icon {
+        font-size: 58px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .result-panel h2 {
+        font-size: 24px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .risk-score {
+        font-size: 46px;
+
+        font-weight: 800;
+
+        margin: 14px 0 4px;
+    }
+
+
+    .score-label {
+        color: #64748b;
+
+        font-size: 13px;
+    }
+
+
+    .risk-bar {
+        width: 100%;
+
+        height: 12px;
+
+        background: #e2e8f0;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        margin-top: 20px;
+    }
+
+
+    .risk-fill {
+        height: 100%;
+
+        border-radius: 20px;
+    }
+
+
+    .safe-fill {
+        background: #22c55e;
+    }
+
+
+    .warning-fill {
+        background: #f59e0b;
+    }
+
+
+    .danger-fill {
+        background: #ef4444;
+    }
+
+
+    .result-message {
+        margin-top: 20px;
+
+        padding: 16px;
+
+        border-radius: 11px;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    .safe-result {
+        background: #dcfce7;
+
+        color: #166534;
+    }
+
+
+    .warning-result {
+        background: #fef3c7;
+
+        color: #92400e;
+    }
+
+
+    .danger-result {
+        background: #fee2e2;
+
+        color: #991b1b;
+    }
+
+
+    .waiting-result {
+        background: #f1f5f9;
+
+        color: #475569;
+    }
+
+
+    .warning-list {
+        margin-top: 20px;
+
+        text-align: left;
+    }
+
+
+    .warning-list h3 {
+        font-size: 15px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .warning-item {
+        background: #fff7ed;
+
+        border-left: 4px solid #f97316;
+
+        color: #7c2d12;
+
+        padding: 11px 13px;
+
+        border-radius: 7px;
+
+        margin-bottom: 8px;
+
+        font-size: 12px;
+
+        line-height: 1.5;
+    }
+
+
+    .tips-card {
+        margin-top: 25px;
+    }
+
+
+    .tips-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 15px;
+    }
+
+
+    .tip {
+        background: #f8fafc;
+
+        padding: 18px;
+
+        border-radius: 12px;
+
+        text-align: center;
+    }
+
+
+    .tip-icon {
+        font-size: 28px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .tip h4 {
+        font-size: 13px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .tip p {
+        color: #64748b;
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+
+    .security-note {
+        margin-top: 25px;
+
+        background: #eff6ff;
+
+        border: 1px solid #bfdbfe;
+
+        color: #1e40af;
+
+        padding: 17px;
+
+        border-radius: 11px;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    @media (max-width: 800px) {
+
+        .url-grid {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
+        .tips-grid {
+            grid-template-columns: 1fr;
         }
 
-        header {
-            background: #0b1f3a;
-            color: white;
-            padding: 22px 7%;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .url-page {
+            width: 92%;
+
+            padding-top: 25px;
         }
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
+        .url-header h1 {
+            font-size: 29px;
         }
 
-        .tagline {
-            margin-top: 5px;
-            font-size: 13px;
-            opacity: 0.8;
+        .url-card {
+            padding: 20px;
         }
 
-        main {
-            width: 90%;
-            max-width: 1000px;
-            margin: 40px auto;
-        }
+    }
 
-        .back {
-            display: inline-block;
-            margin-bottom: 25px;
-            color: #0b1f3a;
-            text-decoration: none;
-            font-weight: bold;
-        }
+</style>
 
-        .card {
-            background: white;
-            padding: 35px;
-            border-radius: 22px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.07);
-        }
-
-        h1 {
-            margin-bottom: 12px;
-        }
-
-        .intro {
-            color: #667085;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .url-form {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .url-input {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #d0d5dd;
-            border-radius: 10px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .url-input:focus {
-            border-color: #0b1f3a;
-        }
-
-        .check-btn {
-            border: none;
-            background: #0b1f3a;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .check-btn:hover {
-            opacity: 0.9;
-        }
-
-        .result-card {
-            margin-top: 25px;
-            padding: 30px;
-            border-radius: 18px;
-            background: #f8fafc;
-        }
-
-        .result-title {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .safe {
-            color: #15803d;
-        }
-
-        .warning {
-            color: #b45309;
-        }
-
-        .danger {
-            color: #b91c1c;
-        }
-
-        .score-box {
-            margin: 25px 0;
-        }
-
-        .score-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .progress {
-            width: 100%;
-            height: 14px;
-            background: #e5e7eb;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #0b1f3a;
-            border-radius: 20px;
-            transition: width 0.5s ease;
-        }
-
-        .checked-url {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #e4e7ec;
-            word-break: break-all;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .message {
-            background: white;
-            padding: 16px;
-            border-radius: 10px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .indicators h3 {
-            margin-bottom: 15px;
-        }
-
-        .indicator {
-            background: white;
-            padding: 14px;
-            border-radius: 9px;
-            margin-bottom: 9px;
-            line-height: 1.5;
-            border: 1px solid #eef0f3;
-        }
-
-        .security-note {
-            margin-top: 30px;
-            padding: 17px;
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            border-radius: 10px;
-            color: #7c2d12;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 35px;
-            color: #667085;
-            font-size: 14px;
-        }
-
-        @media (max-width: 700px) {
-
-            .url-form {
-                flex-direction: column;
-            }
-
-            .check-btn {
-                width: 100%;
-            }
-
-            .card {
-                padding: 25px;
-            }
-
-        }
-
-    </style>
-
-</head>
+{% endblock %}
 
 
-<body>
+
+{% block content %}
+
+<div class="url-page">
 
 
-<header>
+    <!-- HEADER -->
 
-    <div class="logo">
-        ShieldPay AI
-    </div>
+    <div class="url-header">
 
-    <div class="tagline">
-        AI-Powered Transaction Protection
-    </div>
-
-</header>
-
-
-<main>
-
-
-    <a
-        href="/"
-        class="back"
-    >
-        ← Back to Dashboard
-    </a>
-
-
-    <div class="card">
+        <div class="url-icon">
+            🔗
+        </div>
 
         <h1>
-            🔗 Scam URL Checker
+            Scam URL Checker
         </h1>
 
-
-        <p class="intro">
-
-            Check a suspicious website or payment link
-            for common security risk indicators before
-            entering sensitive information.
-
+        <p>
+            Check suspicious links for common
+            phishing and scam indicators.
         </p>
 
-
-        <form
-            method="POST"
-            class="url-form"
-        >
-
-            {% csrf_token %}
+    </div>
 
 
-            <input
-                type="text"
-                name="url"
-                class="url-input"
-                placeholder="https://example.com"
-                value="{{ checked_url|default:'' }}"
-                required
-            >
+
+    <div class="url-grid">
 
 
-            <button
-                type="submit"
-                class="check-btn"
-            >
-                🔍 Check URL
-            </button>
+        <!-- INPUT CARD -->
 
-        </form>
+        <div class="url-card">
 
-
-        {% if result %}
+            <h2>
+                🔍 Check a URL
+            </h2>
 
 
-        <div class="result-card">
+            <form method="POST">
+
+                {% csrf_token %}
 
 
-            <div
-                class="result-title {{ risk_level }}"
-            >
-
-                {% if risk_level == "safe" %}
-
-                    🟢 {{ result }}
-
-                {% elif risk_level == "warning" %}
-
-                    🟡 {{ result }}
-
-                {% else %}
-
-                    🔴 {{ result }}
-
-                {% endif %}
-
-            </div>
+                <label
+                    for="url"
+                    style="
+                        display:block;
+                        margin-bottom:8px;
+                        font-size:13px;
+                        font-weight:bold;
+                        color:#334155;
+                    "
+                >
+                    Website URL
+                </label>
 
 
-            <div class="score-box">
+                <input
+                    type="text"
+                    id="url"
+                    name="url"
+                    class="url-input"
+                    placeholder="https://example.com"
+                    required
+                >
 
 
-                <div class="score-label">
+                <div class="url-help">
 
-                    <span>
-                        Risk Score
-                    </span>
+                    Example:
+                    https://example.com
 
-                    <span>
-                        {{ risk_score }}%
-                    </span>
+                    <br>
+
+                    Do not enter passwords,
+                    OTPs or other private information.
 
                 </div>
 
 
-                <div class="progress">
+                <button
+                    type="submit"
+                    class="check-button"
+                >
+                    🛡️ Analyze URL
+                </button>
 
-                    <div
-                        class="progress-bar"
-                        style="width: {{ risk_score }}%;"
-                    >
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-            {% if checked_url %}
-
-            <div class="checked-url">
-
-                <strong>
-                    Checked URL:
-                </strong>
-
-                <br>
-
-                {{ checked_url }}
-
-            </div>
-
-            {% endif %}
-
-
-            {% if message %}
-
-            <div class="message">
-
-                {{ message }}
-
-            </div>
-
-            {% endif %}
-
-
-            <div class="indicators">
-
-                <h3>
-                    🔎 Security Analysis
-                </h3>
-
-
-                {% for indicator in indicators %}
-
-                <div class="indicator">
-
-                    {{ indicator }}
-
-                </div>
-
-                {% endfor %}
-
-
-            </div>
+            </form>
 
 
             <div class="security-note">
 
-                🛡️ <strong>Security Reminder:</strong>
+                🔐
 
-                This checker uses rule-based URL indicators.
-                It cannot guarantee that a website is completely
-                safe or fraudulent. Never share passwords,
-                OTPs, PINs, or banking credentials with an
-                untrusted website.
+                <strong>
+                    Stay Safe:
+                </strong>
+
+                Never enter your banking password,
+                PIN, OTP or card details after
+                following an unknown link.
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RESULT CARD -->
+
+        <div class="url-card result-panel">
+
+            <h2>
+                🤖 Analysis Result
+            </h2>
+
+
+            {% if result %}
+
+
+                {% if result == "SAFE" %}
+
+
+                    <div class="result-icon">
+                        🟢
+                    </div>
+
+
+                    <h2>
+                        URL Appears Safe
+                    </h2>
+
+
+                    <div class="risk-score">
+                        {{ risk_score }}%
+                    </div>
+
+
+                    <div class="score-label">
+                        Risk Score
+                    </div>
+
+
+                    <div class="risk-bar">
+
+                        <div
+                            class="risk-fill safe-fill"
+                            style="width: {{ risk_score }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-message safe-result">
+
+                        No obvious suspicious patterns
+                        were detected by the basic
+                        ShieldPay AI URL checks.
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="result-icon">
+                        🔴
+                    </div>
+
+
+                    <h2>
+                        Suspicious URL
+                    </h2>
+
+
+                    <div class="risk-score">
+                        {{ risk_score }}%
+                    </div>
+
+
+                    <div class="score-label">
+                        Risk Score
+                    </div>
+
+
+                    <div class="risk-bar">
+
+                        <div
+                            class="risk-fill danger-fill"
+                            style="width: {{ risk_score }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-message danger-result">
+
+                        This URL contains one or more
+                        patterns that may indicate a
+                        suspicious or phishing link.
+
+                        <br><br>
+
+                        Verify the website independently
+                        before entering any information.
+
+                    </div>
+
+
+                {% endif %}
+
+
+                {% if warnings %}
+
+                    <div class="warning-list">
+
+                        <h3>
+                            ⚠️ Detection Details
+                        </h3>
+
+
+                        {% for warning in warnings %}
+
+                            <div class="warning-item">
+
+                                {{ warning }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+            {% else %}
+
+
+                <div
+                    class="result-icon"
+                    style="margin-top:35px;"
+                >
+                    🔍
+                </div>
+
+
+                <h2>
+                    Ready to Analyze
+                </h2>
+
+
+                <div class="result-message waiting-result">
+
+                    Enter a website URL and click
+                    <strong>
+                        Analyze URL
+                    </strong>
+                    to check for common suspicious
+                    patterns.
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- SAFETY TIPS -->
+
+    <div class="url-card tips-card">
+
+        <h2>
+            🛡️ URL Safety Tips
+        </h2>
+
+
+        <div class="tips-grid">
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🔒
+                </div>
+
+                <h4>
+                    Check HTTPS
+                </h4>
+
+                <p>
+                    Look for HTTPS, but remember
+                    that HTTPS alone does not prove
+                    a website is legitimate.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    👀
+                </div>
+
+                <h4>
+                    Check the Domain
+                </h4>
+
+                <p>
+                    Carefully inspect the website
+                    name for unusual spelling,
+                    symbols or misleading domains.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🚫
+                </div>
+
+                <h4>
+                    Avoid Unknown Links
+                </h4>
+
+                <p>
+                    Do not open unexpected links
+                    from unknown messages or emails.
+                </p>
 
             </div>
 
 
         </div>
 
-
-        {% endif %}
-
-
     </div>
 
 
-</main>
+</div>
 
-
-<footer>
-
-    Designed by Fatima Sheikh
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

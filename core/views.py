@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from .models import Transaction, RecoveryIncident
 
@@ -39,6 +40,8 @@ def transaction_checker(request):
 
         if not bank:
             risk_score += 20
+
+        risk_score = min(risk_score, 100)
 
         if risk_score >= 70:
             result = "FRAUD"
@@ -95,24 +98,60 @@ def ai_fraud_detection(request):
 
         amount = request.POST.get("amount")
 
+        transaction_type = request.POST.get(
+            "transaction_type",
+            "Online"
+        )
+
+        receiver = request.POST.get(
+            "receiver",
+            ""
+        ).strip()
+
         try:
             amount_value = float(amount)
         except (TypeError, ValueError):
             amount_value = 0
 
-        risk_score = 15
+        risk_score = 10
 
+        # Amount risk
         if amount_value >= 100000:
             risk_score += 50
-        elif amount_value >= 50000:
-            risk_score += 30
-        elif amount_value >= 20000:
-            risk_score += 15
 
+        elif amount_value >= 50000:
+            risk_score += 35
+
+        elif amount_value >= 20000:
+            risk_score += 20
+
+        elif amount_value >= 10000:
+            risk_score += 10
+
+        # Transaction type risk
+        if transaction_type == "Mobile Wallet":
+            risk_score += 10
+
+        elif transaction_type == "Online":
+            risk_score += 5
+
+        # Receiver check
+        if not receiver:
+            risk_score += 20
+
+        # Keep score between 0 and 100
+        risk_score = min(
+            risk_score,
+            100
+        )
+
+        # Final result
         if risk_score >= 70:
             result = "HIGH RISK"
+
         elif risk_score >= 40:
             result = "MEDIUM RISK"
+
         else:
             result = "LOW RISK"
 
@@ -132,15 +171,22 @@ def slip_scanner(request):
 
     if request.method == "POST":
 
-        uploaded_file = request.FILES.get("slip")
+        uploaded_file = request.FILES.get(
+            "slip"
+        )
 
         if uploaded_file:
+
             result = (
                 "Payment slip uploaded successfully. "
                 "Further verification is required."
             )
+
         else:
-            result = "Please upload a payment slip."
+
+            result = (
+                "Please upload a payment slip."
+            )
 
     return render(
         request,
@@ -154,36 +200,232 @@ def slip_scanner(request):
 def scam_url_checker(request):
 
     result = None
+    risk_score = None
+    warnings = []
 
     if request.method == "POST":
 
         url = request.POST.get(
             "url",
             ""
-        ).strip()
+        ).strip().lower()
 
         if not url:
+
             result = "Please enter a URL."
 
-        elif (
-            url.startswith("https://")
-            and "." in url
-        ):
-            result = (
-                "URL appears safe for basic checks."
+        else:
+
+            risk_score = 0
+
+            # =========================
+            # CHECK 1 — HTTPS
+            # =========================
+
+            if url.startswith("http://"):
+
+                risk_score += 15
+
+                warnings.append(
+                    "Website is using HTTP instead of HTTPS."
+                )
+
+            elif not url.startswith("https://"):
+
+                risk_score += 10
+
+                warnings.append(
+                    "URL does not use a standard HTTPS format."
+                )
+
+
+            # =========================
+            # CHECK 2 — IP ADDRESS
+            # =========================
+
+            import re
+
+            ip_pattern = (
+                r"https?://"
+                r"(?:\d{1,3}\.){3}\d{1,3}"
             )
 
-        else:
-            result = (
-                "Suspicious URL. "
-                "Please verify before opening."
+            if re.match(
+                ip_pattern,
+                url
+            ):
+
+                risk_score += 30
+
+                warnings.append(
+                    "URL uses an IP address instead of a domain name."
+                )
+
+
+            # =========================
+            # CHECK 3 — @ SYMBOL
+            # =========================
+
+            if "@" in url:
+
+                risk_score += 25
+
+                warnings.append(
+                    "URL contains an @ symbol, which can hide the real destination."
+                )
+
+
+            # =========================
+            # CHECK 4 — DOMAIN HYPHENS
+            # =========================
+
+            domain_part = url
+
+            if "://" in domain_part:
+
+                domain_part = domain_part.split(
+                    "://",
+                    1
+                )[1]
+
+            domain_part = domain_part.split(
+                "/",
+                1
+            )[0]
+
+            if domain_part.count("-") >= 3:
+
+                risk_score += 15
+
+                warnings.append(
+                    "Domain contains an unusually high number of hyphens."
+                )
+
+
+            # =========================
+            # CHECK 5 — SUSPICIOUS WORDS
+            # =========================
+
+            suspicious_words = [
+
+                "login",
+                "verify",
+                "verification",
+                "secure",
+                "account",
+                "update",
+                "password",
+                "wallet",
+                "payment",
+                "bank",
+                "confirm",
+                "claim",
+                "reward",
+                "free",
+                "gift",
+                "bonus"
+
+            ]
+
+            found_words = []
+
+            for word in suspicious_words:
+
+                if word in url:
+
+                    found_words.append(
+                        word
+                    )
+
+
+            if len(found_words) >= 3:
+
+                risk_score += 25
+
+                warnings.append(
+                    "URL contains multiple security-sensitive keywords."
+                )
+
+            elif len(found_words) >= 1:
+
+                risk_score += 10
+
+                warnings.append(
+                    "URL contains potentially sensitive keywords."
+                )
+
+
+            # =========================
+            # CHECK 6 — URL LENGTH
+            # =========================
+
+            if len(url) > 100:
+
+                risk_score += 10
+
+                warnings.append(
+                    "URL is unusually long."
+                )
+
+
+            # =========================
+            # CHECK 7 — DOUBLE SLASH
+            # =========================
+
+            if "//" in url[8:]:
+
+                risk_score += 15
+
+                warnings.append(
+                    "URL contains an unusual double-slash pattern."
+                )
+
+
+            # =========================
+            # LIMIT SCORE
+            # =========================
+
+            risk_score = min(
+                risk_score,
+                100
             )
+
+
+            # =========================
+            # FINAL RESULT
+            # =========================
+
+            if risk_score >= 60:
+
+                result = "SUSPICIOUS"
+
+            elif risk_score >= 30:
+
+                result = "SUSPICIOUS"
+
+            else:
+
+                result = "SAFE"
+
+
+            # =========================
+            # NO WARNING
+            # =========================
+
+            if not warnings:
+
+                warnings.append(
+                    "No obvious suspicious patterns were detected by the basic URL checks."
+                )
+
 
     return render(
         request,
         "scam_url_checker.html",
         {
-            "result": result
+            "result": result,
+            "risk_score": risk_score,
+            "warnings": warnings
         }
     )
 
@@ -228,69 +470,23 @@ def recovery_center(request):
             status="PENDING"
         )
 
-    search_query = request.GET.get(
-        "search",
-        ""
-    ).strip()
-
-    status_filter = request.GET.get(
-        "status",
-        "ALL"
-    ).strip()
-
     incidents = (
         RecoveryIncident.objects
         .all()
         .order_by("-created_at")
     )
 
-    if search_query:
+    total_cases = incidents.count()
 
-        incidents = incidents.filter(
-
-            case_id__icontains=search_query
-
-        ) | incidents.filter(
-
-            transaction_id__icontains=search_query
-
-        ) | incidents.filter(
-
-            incident_type__icontains=search_query
-
-        ) | incidents.filter(
-
-            bank__icontains=search_query
-
-        )
-
-    if status_filter in [
-        "PENDING",
-        "IN_PROGRESS",
-        "RESOLVED"
-    ]:
-
-        incidents = incidents.filter(
-            status=status_filter
-        )
-
-    incidents = incidents.distinct().order_by(
-        "-created_at"
-    )
-
-    all_incidents = RecoveryIncident.objects.all()
-
-    total_cases = all_incidents.count()
-
-    pending_cases = all_incidents.filter(
+    pending_cases = incidents.filter(
         status="PENDING"
     ).count()
 
-    in_progress_cases = all_incidents.filter(
+    in_progress_cases = incidents.filter(
         status="IN_PROGRESS"
     ).count()
 
-    resolved_cases = all_incidents.filter(
+    resolved_cases = incidents.filter(
         status="RESOLVED"
     ).count()
 
@@ -302,14 +498,15 @@ def recovery_center(request):
             "total_cases": total_cases,
             "pending_cases": pending_cases,
             "in_progress_cases": in_progress_cases,
-            "resolved_cases": resolved_cases,
-            "search_query": search_query,
-            "status_filter": status_filter
+            "resolved_cases": resolved_cases
         }
     )
 
 
-def recovery_case(request, case_id):
+def recovery_case(
+    request,
+    case_id
+):
 
     try:
 
@@ -340,14 +537,7 @@ def recovery_case(request, case_id):
 
         elif action == "evidence_saved":
 
-            uploaded_file = request.FILES.get(
-                "evidence_file"
-            )
-
-            if uploaded_file:
-
-                incident.evidence_file = uploaded_file
-                incident.evidence_saved = True
+            incident.evidence_saved = True
 
         elif action == "status":
 
@@ -362,6 +552,7 @@ def recovery_case(request, case_id):
             ]
 
             if new_status in valid_statuses:
+
                 incident.status = new_status
 
         if (

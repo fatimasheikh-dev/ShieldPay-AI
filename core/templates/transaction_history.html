@@ -1,283 +1,507 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}
+    ShieldPay AI - Transaction History
+{% endblock %}
 
-    <title>ShieldPay AI | Transaction History</title>
 
-    <style>
+{% block extra_css %}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<style>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
-        }
+    .history-page {
+        width: 88%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 45px 0 60px;
+    }
 
-        header {
-            background: #0b1f3a;
-            color: white;
-            padding: 22px 7%;
-        }
 
-        .logo {
-            font-size: 25px;
-            font-weight: bold;
-        }
+    .history-header {
+        margin-bottom: 28px;
+    }
 
-        .tagline {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
 
-        main {
+    .history-header h1 {
+        font-size: 35px;
+        margin-bottom: 8px;
+    }
+
+
+    .history-header p {
+        color: #64748b;
+        font-size: 15px;
+    }
+
+
+    .history-card {
+        background: white;
+        border-radius: 18px;
+        padding: 25px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+
+        overflow-x: auto;
+    }
+
+
+    .history-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .history-top h2 {
+        font-size: 20px;
+    }
+
+
+    .count-badge {
+        background: #eff6ff;
+        color: #1d4ed8;
+
+        padding: 7px 12px;
+
+        border-radius: 20px;
+
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        min-width: 850px;
+    }
+
+
+    th {
+        background: #f8fafc;
+
+        color: #64748b;
+
+        text-align: left;
+
+        padding: 14px 12px;
+
+        font-size: 11px;
+
+        letter-spacing: 0.4px;
+
+        border-bottom:
+            1px solid #e2e8f0;
+    }
+
+
+    td {
+        padding: 15px 12px;
+
+        border-bottom:
+            1px solid #eef2f7;
+
+        font-size: 13px;
+
+        vertical-align: middle;
+    }
+
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+
+    .receiver {
+        font-weight: bold;
+        color: #172033;
+    }
+
+
+    .bank {
+        color: #64748b;
+    }
+
+
+    .amount {
+        font-weight: bold;
+    }
+
+
+    .risk {
+        font-weight: bold;
+    }
+
+
+    .risk-safe {
+        color: #16a34a;
+    }
+
+
+    .risk-warning {
+        color: #d97706;
+    }
+
+
+    .risk-danger {
+        color: #dc2626;
+    }
+
+
+    .empty-history {
+        text-align: center;
+
+        padding: 60px 20px;
+
+        color: #64748b;
+    }
+
+
+    .empty-history-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+
+    .empty-history h2 {
+        color: #172033;
+        margin-bottom: 8px;
+    }
+
+
+    .history-actions {
+        margin-top: 22px;
+
+        display: flex;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .history-page {
             width: 92%;
-            max-width: 1100px;
-            margin: 40px auto;
+            padding-top: 25px;
         }
 
-        .back {
-            display: inline-block;
-            margin-bottom: 25px;
-            color: #0b1f3a;
-            text-decoration: none;
-            font-weight: bold;
+
+        .history-header h1 {
+            font-size: 29px;
         }
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+
+        .history-card {
+            padding: 18px;
         }
 
-        h1 {
-            margin-bottom: 10px;
-        }
+    }
 
-        .description {
-            color: #667085;
-            margin-bottom: 25px;
-        }
+</style>
 
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 850px;
-        }
-
-        th {
-            background: #0b1f3a;
-            color: white;
-            padding: 14px;
-            text-align: left;
-        }
-
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #eaecf0;
-        }
-
-        tr:hover {
-            background: #f8fafc;
-        }
-
-        .safe {
-            color: #067647;
-            font-weight: bold;
-        }
-
-        .suspicious {
-            color: #b54708;
-            font-weight: bold;
-        }
-
-        .fraudulent {
-            color: #b42318;
-            font-weight: bold;
-        }
-
-        .empty {
-            padding: 30px;
-            text-align: center;
-            color: #667085;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #667085;
-            font-size: 14px;
-        }
-
-    </style>
-
-</head>
+{% endblock %}
 
 
-<body>
+
+{% block content %}
+
+<div class="history-page">
 
 
-<header>
+    <!-- HEADER -->
 
-    <div class="logo">
-        ShieldPay AI
-    </div>
-
-    <div class="tagline">
-        AI-Powered Transaction Protection
-    </div>
-
-</header>
-
-
-<main>
-
-    <a class="back" href="/">
-        ← Back to Dashboard
-    </a>
-
-
-    <div class="card">
+    <div class="history-header">
 
         <h1>
             📊 Transaction History
         </h1>
 
-        <p class="description">
-            View previously analyzed transactions and
-            their ShieldPay AI risk assessments.
+        <p>
+            Review previously analyzed transactions
+            and their fraud-risk results.
         </p>
+
+    </div>
+
+
+
+    <!-- HISTORY CARD -->
+
+    <div class="history-card">
+
+
+        <div class="history-top">
+
+            <h2>
+                Recent Transactions
+            </h2>
+
+
+            <span class="count-badge">
+
+                {{ transactions|length }}
+                Transaction{{ transactions|length|pluralize }}
+
+            </span>
+
+        </div>
+
 
 
         {% if transactions %}
 
-        <div class="table-container">
 
-            <table>
+            <div class="table-wrapper">
 
-                <thead>
-
-                    <tr>
-
-                        <th>Date</th>
-
-                        <th>Amount</th>
-
-                        <th>Receiver</th>
-
-                        <th>Bank</th>
-
-                        <th>Type</th>
-
-                        <th>Risk Score</th>
-
-                        <th>Result</th>
-
-                    </tr>
-
-                </thead>
+                <table>
 
 
-                <tbody>
+                    <thead>
 
-                {% for transaction in transactions %}
+                        <tr>
 
-                    <tr>
+                            <th>
+                                DATE
+                            </th>
 
-                        <td>
-                            {{ transaction.created_at|date:"d M Y, h:i A" }}
-                        </td>
+                            <th>
+                                RECEIVER
+                            </th>
 
-                        <td>
-                            {{ transaction.amount }}
-                        </td>
+                            <th>
+                                BANK
+                            </th>
 
-                        <td>
-                            {{ transaction.receiver_name }}
-                        </td>
+                            <th>
+                                AMOUNT
+                            </th>
 
-                        <td>
-                            {{ transaction.bank }}
-                        </td>
+                            <th>
+                                TYPE
+                            </th>
 
-                        <td>
-                            {{ transaction.transaction_type }}
-                        </td>
+                            <th>
+                                RISK
+                            </th>
 
-                        <td>
-                            {{ transaction.risk_score }}%
-                        </td>
+                            <th>
+                                RESULT
+                            </th>
 
-                        <td>
+                        </tr>
 
-                            {% if transaction.result == "SAFE" %}
+                    </thead>
 
-                                <span class="safe">
-                                    SAFE
+
+                    <tbody>
+
+
+                        {% for transaction in transactions %}
+
+
+                        <tr>
+
+
+                            <td>
+
+                                {{ transaction.created_at|date:"d M Y" }}
+
+                                <br>
+
+                                <small style="color:#94a3b8;">
+                                    {{ transaction.created_at|date:"H:i" }}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="receiver">
+                                    {{ transaction.receiver_name }}
+                                </div>
+
+                                <small style="color:#94a3b8;">
+                                    {{ transaction.receiver_account }}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="bank">
+                                    {{ transaction.bank }}
                                 </span>
 
-                            {% elif transaction.result == "SUSPICIOUS" %}
+                            </td>
 
-                                <span class="suspicious">
-                                    SUSPICIOUS
+
+                            <td>
+
+                                <span class="amount">
+                                    {{ transaction.amount }}
                                 </span>
 
-                            {% else %}
+                            </td>
 
-                                <span class="fraudulent">
-                                    FRAUDULENT
+
+                            <td>
+
+                                {{ transaction.transaction_type }}
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="
+                                    risk
+                                    {% if transaction.risk_score >= 70 %}
+                                        risk-danger
+                                    {% elif transaction.risk_score >= 40 %}
+                                        risk-warning
+                                    {% else %}
+                                        risk-safe
+                                    {% endif %}
+                                    "
+                                >
+
+                                    {{ transaction.risk_score }}%
+
                                 </span>
 
-                            {% endif %}
+                            </td>
 
-                        </td>
 
-                    </tr>
+                            <td>
 
-                {% endfor %}
 
-                </tbody>
+                                {% if transaction.result == "SAFE" %}
 
-            </table>
+                                    <span class="badge badge-safe">
+                                        🟢 SAFE
+                                    </span>
 
-        </div>
+
+                                {% elif transaction.result == "SUSPICIOUS" %}
+
+                                    <span class="badge badge-warning">
+                                        🟡 SUSPICIOUS
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="badge badge-danger">
+                                        🔴 FRAUD
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+            <div class="history-actions">
+
+                <a
+                    href="/transaction-checker/"
+                    class="btn btn-primary"
+                >
+                    💳 Check New Transaction
+                </a>
+
+
+                <a
+                    href="/"
+                    class="btn btn-dark"
+                >
+                    🏠 Dashboard
+                </a>
+
+            </div>
+
 
         {% else %}
 
-        <div class="empty">
 
-            No transactions have been analyzed yet.
+            <div class="empty-history">
 
-        </div>
+
+                <div class="empty-history-icon">
+                    📊
+                </div>
+
+
+                <h2>
+                    No Transactions Yet
+                </h2>
+
+
+                <p>
+                    You haven't analyzed any
+                    transactions yet.
+                </p>
+
+
+                <div class="history-actions"
+                     style="justify-content:center;">
+
+                    <a
+                        href="/transaction-checker/"
+                        class="btn btn-primary"
+                    >
+                        💳 Analyze First Transaction
+                    </a>
+
+                </div>
+
+
+            </div>
+
 
         {% endif %}
 
 
     </div>
 
-</main>
 
+</div>
 
-<footer>
-
-    Designed by Fatima Sheikh
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

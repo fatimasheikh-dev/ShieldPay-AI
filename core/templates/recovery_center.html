@@ -1,565 +1,458 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+    ShieldPay AI - Recovery Center
+{% endblock %}
 
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+{% block extra_css %}
 
-    <title>ShieldPay AI - Recovery Center</title>
+<style>
 
-    <style>
+    .recovery-page {
+        width: 88%;
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 40px 0 60px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .recovery-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
-        }
+    .sos {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f43f5e;
+        color: white;
+        font-weight: bold;
+        padding: 9px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
 
-        header {
-            background: #0f172a;
-            color: white;
-            padding: 18px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .recovery-header h1 {
+        font-size: 36px;
+        margin-bottom: 9px;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    .recovery-header p {
+        color: #64748b;
+    }
 
-        .logo span {
-            color: #38bdf8;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 28px;
+    }
 
-        .back {
-            color: white;
-            text-decoration: none;
-            border: 1px solid #475569;
-            padding: 10px 16px;
-            border-radius: 8px;
-        }
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
 
-        .hero {
-            text-align: center;
-            padding: 45px 20px 25px;
-        }
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
 
-        .sos {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #f43f5e;
-            color: white;
-            font-weight: bold;
-            font-size: 22px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-        }
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 13px;
+        background: #eff6ff;
 
-        .hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        .hero p {
-            color: #64748b;
-            font-size: 17px;
-        }
+        font-size: 25px;
+    }
 
-        /* STATISTICS */
+    .stat-card span {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .stat-card h2 {
+        font-size: 27px;
+    }
+
+    .filter-box {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 240px;
+        padding: 13px 15px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        font-size: 14px;
+    }
+
+    .search-input:focus {
+        border-color: #0284c7;
+    }
+
+    .filter-select {
+        min-width: 170px;
+        padding: 13px 15px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        background: white;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        padding: 13px 22px;
+        border: none;
+        border-radius: 10px;
+
+        background: #0284c7;
+        color: white;
+
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .clear-btn {
+        padding: 13px 20px;
+
+        background: #e2e8f0;
+        color: #334155;
+
+        text-decoration: none;
+        border-radius: 10px;
+
+        font-weight: bold;
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin: 28px 0 18px;
+    }
+
+    .case-card {
+        background: white;
+        border-radius: 18px;
+        padding: 26px;
+        margin-bottom: 20px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+    .case-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .case-id {
+        font-size: 23px;
+        font-weight: bold;
+    }
+
+    .badge {
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .progress {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .resolved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .info-box strong {
+        display: block;
+        color: #64748b;
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+
+    .description {
+        background: #f8fafc;
+        padding: 17px;
+        border-radius: 10px;
+        margin-top: 16px;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+    .case-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .date {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .view-btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 10px;
+
+        background: #0284c7;
+        color: white;
+
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .view-btn:hover {
+        background: #0369a1;
+    }
+
+    .empty {
+        background: white;
+        padding: 45px;
+        border-radius: 18px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .security {
+        margin-top: 25px;
+        padding: 17px;
+
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+
+        color: #78350f;
+        border-radius: 12px;
+
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
 
         .stats-grid {
-            width: 86%;
-            max-width: 1150px;
-            margin: 15px auto 30px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 22px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow:
-                0 8px 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-        }
-
-        .stat-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 14px;
-            background: #eff6ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 27px;
-            flex-shrink: 0;
-        }
-
-        .stat-card span {
-            display: block;
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-
-        .stat-card h2 {
-            font-size: 28px;
-        }
-
-        /* MAIN */
-
-        .container {
-            width: 86%;
-            max-width: 1150px;
-            margin: 0 auto 50px;
-        }
-
-        .section-title {
-            font-size: 25px;
-            margin: 30px 0 18px;
-        }
-
-        /* SEARCH */
-
-        .filter-box {
-            background: white;
-            padding: 22px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            box-shadow:
-                0 8px 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-        }
-
-        .filter-form {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 240px;
-            padding: 14px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .search-input:focus {
-            border-color: #0284c7;
-        }
-
-        .filter-select {
-            padding: 14px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            background: white;
-            font-size: 15px;
-            cursor: pointer;
-            min-width: 180px;
-        }
-
-        .search-btn {
-            padding: 14px 24px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .search-btn:hover {
-            background: #0369a1;
-        }
-
-        .clear-btn {
-            padding: 14px 20px;
-            background: #e2e8f0;
-            color: #334155;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-        }
-
-        .clear-btn:hover {
-            background: #cbd5e1;
-        }
-
-        .active-filter {
-            margin-top: 14px;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .active-filter strong {
-            color: #0284c7;
-        }
-
-        /* CASE CARD */
-
-        .case-card {
-            background: white;
-            border-radius: 18px;
-            padding: 28px;
-            margin-bottom: 22px;
-            box-shadow:
-                0 8px 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-        }
-
-        .case-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 22px;
-        }
-
-        .case-id {
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        .badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .progress {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .resolved {
-            background: #dcfce7;
-            color: #166534;
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .info-box {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 11px;
+    }
+
+    @media (max-width: 600px) {
+
+        .recovery-page {
+            width: 92%;
         }
 
-        .info-box strong {
-            display: block;
-            color: #64748b;
-            font-size: 11px;
-            margin-bottom: 7px;
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
-        .description {
-            background: #f8fafc;
-            padding: 18px;
-            border-radius: 11px;
-            margin-top: 18px;
-            line-height: 1.6;
+        .info-grid {
+            grid-template-columns: 1fr;
         }
 
-        .case-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-top: 22px;
-            flex-wrap: wrap;
+        .filter-form {
+            flex-direction: column;
         }
 
-        .date {
-            color: #64748b;
-            font-size: 14px;
+        .search-input,
+        .filter-select,
+        .search-btn,
+        .clear-btn {
+            width: 100%;
         }
 
-        .view-btn {
-            display: inline-block;
-            text-decoration: none;
-            background: #0284c7;
-            color: white;
-            padding: 13px 24px;
-            border-radius: 10px;
-            font-weight: bold;
+        .recovery-header h1 {
+            font-size: 29px;
         }
 
-        .view-btn:hover {
-            background: #0369a1;
-        }
+    }
 
-        /* EMPTY */
+</style>
 
-        .empty {
-            background: white;
-            padding: 50px;
-            border-radius: 18px;
-            text-align: center;
-            color: #64748b;
-        }
-
-        /* SECURITY */
-
-        .security {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #78350f;
-            padding: 18px;
-            border-radius: 12px;
-            margin-top: 25px;
-            line-height: 1.6;
-        }
-
-        /* FOOTER */
-
-        footer {
-            background: #0f172a;
-            color: #cbd5e1;
-            text-align: center;
-            padding: 25px;
-        }
-
-        .designer {
-            color: #38bdf8;
-            font-weight: bold;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 900px) {
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .info-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .stats-grid {
-                width: 92%;
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                width: 92%;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-
-            .case-card {
-                padding: 20px;
-            }
-
-            .filter-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-input,
-            .filter-select,
-            .search-btn,
-            .clear-btn {
-                width: 100%;
-            }
-
-        }
-
-    </style>
-
-</head>
+{% endblock %}
 
 
-<body>
+{% block content %}
+
+<div class="recovery-page">
 
 
-<header>
+    <!-- HEADER -->
 
-    <div class="logo">
-        🛡️ Shield<span>Pay</span> AI
-    </div>
+    <div class="recovery-header">
 
-    <a
-        href="/"
-        class="back"
-    >
-        ← Dashboard
-    </a>
-
-</header>
-
-
-<section class="hero">
-
-    <div class="sos">
-        SOS
-    </div>
-
-    <h1>
-        Recovery Center
-    </h1>
-
-    <p>
-        Manage and track your reported fraud
-        recovery cases.
-    </p>
-
-</section>
-
-
-<!-- STATISTICS -->
-
-<div class="stats-grid">
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            📁
+        <div class="sos">
+            🚨 SOS
         </div>
 
-        <div>
+        <h1>
+            Recovery Center
+        </h1>
 
-            <span>
-                Total Cases
-            </span>
-
-            <h2>
-                {{ total_cases }}
-            </h2>
-
-        </div>
+        <p>
+            Manage and track your reported
+            fraud recovery cases.
+        </p>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- STATISTICS -->
 
-        <div class="stat-icon">
-            ⏳
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📁
+            </div>
+
+            <div>
+
+                <span>
+                    Total Cases
+                </span>
+
+                <h2>
+                    {{ total_cases }}
+                </h2>
+
+            </div>
+
         </div>
 
-        <div>
 
-            <span>
-                Pending
-            </span>
+        <div class="stat-card">
 
-            <h2>
-                {{ pending_cases }}
-            </h2>
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+            <div>
+
+                <span>
+                    Pending
+                </span>
+
+                <h2>
+                    {{ pending_cases }}
+                </h2>
+
+            </div>
 
         </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔄
+            </div>
+
+            <div>
+
+                <span>
+                    In Progress
+                </span>
+
+                <h2>
+                    {{ in_progress_cases }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <div>
+
+                <span>
+                    Resolved
+                </span>
+
+                <h2>
+                    {{ resolved_cases }}
+                </h2>
+
+            </div>
+
+        </div>
+
 
     </div>
 
 
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            🔄
-        </div>
-
-        <div>
-
-            <span>
-                In Progress
-            </span>
-
-            <h2>
-                {{ in_progress_cases }}
-            </h2>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            ✅
-        </div>
-
-        <div>
-
-            <span>
-                Resolved
-            </span>
-
-            <h2>
-                {{ resolved_cases }}
-            </h2>
-
-        </div>
-
-    </div>
-
-
-</div>
-
-
-<main class="container">
-
-
-    <!-- SEARCH & FILTER -->
+    <!-- SEARCH -->
 
     <div class="filter-box">
 
@@ -573,7 +466,7 @@
                 name="search"
                 class="search-input"
                 placeholder="🔎 Search Case ID, Transaction ID, Bank..."
-                value="{{ search_query }}"
+                value="{{ search_query|default:'' }}"
             >
 
 
@@ -584,13 +477,12 @@
 
                 <option
                     value="ALL"
-                    {% if status_filter == "ALL" %}
+                    {% if status_filter == "ALL" or not status_filter %}
                         selected
                     {% endif %}
                 >
                     📂 All Cases
                 </option>
-
 
                 <option
                     value="PENDING"
@@ -601,7 +493,6 @@
                     ⏳ Pending
                 </option>
 
-
                 <option
                     value="IN_PROGRESS"
                     {% if status_filter == "IN_PROGRESS" %}
@@ -610,7 +501,6 @@
                 >
                     🔄 In Progress
                 </option>
-
 
                 <option
                     value="RESOLVED"
@@ -641,36 +531,6 @@
 
         </form>
 
-
-        {% if search_query or status_filter != "ALL" %}
-
-            <div class="active-filter">
-
-                Active filters:
-
-                {% if search_query %}
-
-                    Search:
-                    <strong>
-                        {{ search_query }}
-                    </strong>
-
-                {% endif %}
-
-
-                {% if status_filter != "ALL" %}
-
-                    | Status:
-                    <strong>
-                        {{ status_filter }}
-                    </strong>
-
-                {% endif %}
-
-            </div>
-
-        {% endif %}
-
     </div>
 
 
@@ -684,7 +544,6 @@
 
         {% for incident in incidents %}
 
-
         <div class="case-card">
 
 
@@ -692,8 +551,7 @@
 
                 <div class="case-id">
 
-                    🆔
-                    {{ incident.case_id }}
+                    🆔 {{ incident.case_id }}
 
                 </div>
 
@@ -753,13 +611,9 @@
                     </strong>
 
                     {% if incident.amount %}
-
                         {{ incident.amount }}
-
                     {% else %}
-
                         Not provided
-
                     {% endif %}
 
                 </div>
@@ -803,7 +657,7 @@
 
 
                 <a
-                    href="/recovery-case/{{ incident.case_id }}/"
+                    href="{% url 'recovery_case' incident.case_id %}"
                     class="view-btn"
                 >
                     🔎 View Case
@@ -814,12 +668,10 @@
 
         </div>
 
-
         {% endfor %}
 
 
     {% else %}
-
 
         <div class="empty">
 
@@ -832,12 +684,11 @@
             </h2>
 
             <p>
-                Try changing your search or
-                status filter.
+                There are currently no recovery
+                cases matching your search.
             </p>
 
         </div>
-
 
     {% endif %}
 
@@ -857,20 +708,6 @@
     </div>
 
 
-</main>
+</div>
 
-
-<footer>
-
-    Designed by
-
-    <span class="designer">
-        Fatima Sheikh
-    </span>
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

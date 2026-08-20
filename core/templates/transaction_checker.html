@@ -1,468 +1,1110 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>ShieldPay AI | Transaction Checker</title>
+{% block title %}
+    ShieldPay AI - Transaction Checker
+{% endblock %}
 
-    <style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+{% block extra_css %}
+
+<style>
+
+    .checker-page {
+        width: 88%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 45px 0 60px;
+    }
+
+
+    .checker-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+
+    .checker-icon {
+        width: 70px;
+        height: 70px;
+
+        margin: 0 auto 15px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eff6ff;
+        border-radius: 18px;
+
+        font-size: 34px;
+    }
+
+
+    .checker-header h1 {
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
+
+
+    .checker-header p {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+
+    .checker-grid {
+        display: grid;
+
+        grid-template-columns: 1.15fr 0.85fr;
+
+        gap: 25px;
+
+        align-items: start;
+    }
+
+
+    .checker-card {
+        background: white;
+
+        border-radius: 18px;
+
+        padding: 28px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+
+    .checker-card h2 {
+        font-size: 21px;
+        margin-bottom: 22px;
+    }
+
+
+    .field-row {
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 15px;
+    }
+
+
+    .check-button {
+        width: 100%;
+
+        margin-top: 8px;
+
+        padding: 14px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #0284c7;
+
+        color: white;
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .check-button:hover {
+        background: #0369a1;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================
+       RESULT
+    ========================== */
+
+    .result-card {
+        text-align: center;
+
+        min-height: 430px;
+    }
+
+
+    .result-icon {
+        font-size: 55px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .result-card h2 {
+        margin-bottom: 8px;
+    }
+
+
+    .risk-number {
+        font-size: 48px;
+
+        font-weight: 800;
+
+        margin: 15px 0 5px;
+    }
+
+
+    .risk-label {
+        color: #64748b;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================
+       RISK BAR
+    ========================== */
+
+    .risk-bar {
+        width: 100%;
+
+        height: 13px;
+
+        background: #e2e8f0;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        margin-top: 20px;
+    }
+
+
+    .risk-fill {
+        height: 100%;
+
+        border-radius: 20px;
+
+        transition: width 0.5s ease;
+    }
+
+
+    .safe-fill {
+        background: #22c55e;
+    }
+
+
+    .warning-fill {
+        background: #f59e0b;
+    }
+
+
+    .danger-fill {
+        background: #ef4444;
+    }
+
+
+    /* =========================
+       RESULT MESSAGE
+    ========================== */
+
+    .result-message {
+        margin-top: 20px;
+
+        padding: 15px;
+
+        border-radius: 10px;
+
+        line-height: 1.6;
+
+        font-size: 14px;
+    }
+
+
+    .safe-result {
+        background: #dcfce7;
+
+        color: #166534;
+    }
+
+
+    .warning-result {
+        background: #fef3c7;
+
+        color: #92400e;
+    }
+
+
+    .danger-result {
+        background: #fee2e2;
+
+        color: #991b1b;
+    }
+
+
+    .waiting-result {
+        background: #f1f5f9;
+
+        color: #475569;
+    }
+
+
+    /* =========================
+       RISK DETAILS
+    ========================== */
+
+    .risk-details {
+        margin-top: 22px;
+
+        text-align: left;
+    }
+
+
+    .risk-details h3 {
+        font-size: 15px;
+
+        margin-bottom: 12px;
+    }
+
+
+    .risk-item {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        background: #f8fafc;
+
+        padding: 10px 12px;
+
+        border-radius: 8px;
+
+        margin-bottom: 8px;
+
+        font-size: 12px;
+    }
+
+
+    .risk-item span:last-child {
+        font-weight: bold;
+
+        color: #334155;
+    }
+
+
+    /* =========================
+       TIPS
+    ========================== */
+
+    .tips {
+        margin-top: 25px;
+    }
+
+
+    .tips h3 {
+        font-size: 17px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .tip {
+        display: flex;
+
+        gap: 10px;
+
+        margin-bottom: 12px;
+
+        color: #64748b;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    .tip-icon {
+        flex-shrink: 0;
+
+        color: #16a34a;
+
+        font-weight: bold;
+    }
+
+
+    /* =========================
+       SECURITY
+    ========================== */
+
+    .security-box {
+        margin-top: 25px;
+
+        background: #eff6ff;
+
+        border: 1px solid #bfdbfe;
+
+        color: #1e40af;
+
+        padding: 16px;
+
+        border-radius: 11px;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 800px) {
+
+        .checker-grid {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .checker-page {
+            width: 92%;
+
+            padding-top: 25px;
         }
 
-        header {
-            background: #0b1f3a;
-            color: white;
-            padding: 22px 7%;
+
+        .checker-header h1 {
+            font-size: 29px;
         }
 
-        .logo {
-            font-size: 25px;
-            font-weight: bold;
+
+        .field-row {
+            grid-template-columns: 1fr;
         }
 
-        .tagline {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 5px;
+
+        .checker-card {
+            padding: 20px;
         }
 
-        main {
-            width: 90%;
-            max-width: 850px;
-            margin: 45px auto;
+
+        .risk-number {
+            font-size: 42px;
         }
 
-        .back {
-            display: inline-block;
-            margin-bottom: 25px;
-            color: #0b1f3a;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    }
 
-        .card {
-            background: white;
-            padding: 35px;
-            border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        }
+</style>
 
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .description {
-            color: #667085;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #d0d5dd;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        .check-button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 9px;
-            background: #0b1f3a;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .result-box {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 12px;
-            background: #eef4ff;
-            border: 1px solid #d0d5dd;
-        }
-
-        .result-box h2 {
-            margin-bottom: 12px;
-        }
-
-        .result {
-            margin-top: 15px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .risk-score {
-            margin-top: 10px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .breakdown {
-            margin-top: 25px;
-        }
-
-        .breakdown h3 {
-            margin-bottom: 15px;
-        }
-
-        .risk-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px;
-            margin-bottom: 8px;
-            background: white;
-            border: 1px solid #e4e7ec;
-            border-radius: 8px;
-        }
-
-        .risk-value {
-            font-weight: bold;
-        }
-
-        .security-note {
-            margin-top: 25px;
-            padding: 15px;
-            background: #f0f4f8;
-            border-radius: 10px;
-            color: #667085;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #667085;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-
-            .card {
-                padding: 25px;
-            }
-
-            main {
-                width: 92%;
-            }
-
-        }
-
-    </style>
-
-</head>
+{% endblock %}
 
 
-<body>
 
-<header>
+{% block content %}
 
-    <div class="logo">
-        ShieldPay AI
-    </div>
-
-    <div class="tagline">
-        AI-Powered Transaction Protection
-    </div>
-
-</header>
+<div class="checker-page">
 
 
-<main>
+    <!-- =========================
+         HEADER
+    ========================== -->
 
-    <a class="back" href="/">
-        ← Back to Dashboard
-    </a>
+    <div class="checker-header">
 
-
-    <div class="card">
+        <div class="checker-icon">
+            💳
+        </div>
 
         <h1>
-            💳 Transaction Fraud Checker
+            Transaction Checker
         </h1>
 
-        <p class="description">
-            Enter the transaction details below. ShieldPay AI
-            will analyze the transaction and calculate a
-            fraud-risk assessment.
+        <p>
+            Analyze a transaction and identify
+            possible fraud risk before proceeding.
         </p>
 
-
-        <form method="POST">
-
-            {% csrf_token %}
+    </div>
 
 
-            <div class="form-group">
 
-                <label>Transaction Amount</label>
-
-                <input
-                    type="number"
-                    name="amount"
-                    placeholder="Enter amount"
-                    step="0.01"
-                    min="0"
-                    required
-                >
-
-            </div>
+    <div class="checker-grid">
 
 
-            <div class="form-group">
+        <!-- =========================
+             INPUT CARD
+        ========================== -->
 
-                <label>Receiver Name</label>
-
-                <input
-                    type="text"
-                    name="receiver_name"
-                    placeholder="Enter receiver name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Receiver Account / Number</label>
-
-                <input
-                    type="text"
-                    name="receiver_account"
-                    placeholder="Enter account or payment number"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Bank / Payment Service</label>
-
-                <input
-                    type="text"
-                    name="bank"
-                    placeholder="Enter bank or payment service"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Transaction Type</label>
-
-                <select name="transaction_type" required>
-
-                    <option value="">
-                        Select transaction type
-                    </option>
-
-                    <option value="bank_transfer">
-                        Bank Transfer
-                    </option>
-
-                    <option value="mobile_wallet">
-                        Mobile Wallet
-                    </option>
-
-                    <option value="card_payment">
-                        Card Payment
-                    </option>
-
-                    <option value="online_payment">
-                        Online Payment
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Transaction Purpose</label>
-
-                <input
-                    type="text"
-                    name="purpose"
-                    placeholder="e.g. Shopping, tuition, personal transfer"
-                    required
-                >
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="check-button"
-            >
-                🔍 Analyze Transaction
-            </button>
-
-        </form>
-
-
-        {% if message %}
-
-        <div class="result-box">
+        <div class="checker-card">
 
             <h2>
-                🛡️ ShieldPay AI Result
+                🔎 Transaction Analysis
             </h2>
 
-            <p>
-                {{ message }}
-            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- AMOUNT + RECEIVER -->
+
+                <div class="field-row">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Transaction Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            name="amount"
+                            class="form-control"
+                            placeholder="Enter amount"
+                            step="0.01"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Receiver Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="receiver"
+                            class="form-control"
+                            placeholder="Receiver name"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- BANK -->
+
+                <div class="form-group">
+
+                    <label>
+                        Bank / Payment Provider
+                    </label>
+
+                    <input
+                        type="text"
+                        name="bank"
+                        class="form-control"
+                        placeholder="e.g. HBL, Meezan Bank, JazzCash"
+                    >
+
+                </div>
+
+
+                <!-- TRANSACTION TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Transaction Type
+                    </label>
+
+                    <select
+                        name="transaction_type"
+                        class="form-control"
+                    >
+
+                        <option value="Online">
+                            Online Payment
+                        </option>
+
+                        <option value="Bank Transfer">
+                            Bank Transfer
+                        </option>
+
+                        <option value="Mobile Wallet">
+                            Mobile Wallet
+                        </option>
+
+                        <option value="Card">
+                            Card Payment
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PURPOSE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Transaction Purpose
+                    </label>
+
+                    <select
+                        name="purpose"
+                        class="form-control"
+                    >
+
+                        <option value="Shopping">
+                            Shopping / Purchase
+                        </option>
+
+                        <option value="Bank Transfer">
+                            Bank Transfer
+                        </option>
+
+                        <option value="Bills">
+                            Bills / Utilities
+                        </option>
+
+                        <option value="Personal">
+                            Personal Payment
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BUTTON -->
+
+                <button
+                    type="submit"
+                    class="check-button"
+                >
+                    🛡️ Analyze Transaction
+                </button>
+
+
+            </form>
+
+
+
+            <!-- =========================
+                 SAFETY TIPS
+            ========================== -->
+
+            <div class="tips">
+
+                <h3>
+                    🔐 Safety Tips
+                </h3>
+
+
+                <div class="tip">
+
+                    <span class="tip-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Never share your OTP, PIN,
+                        password, or CVV.
+                    </span>
+
+                </div>
+
+
+                <div class="tip">
+
+                    <span class="tip-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Always verify the receiver
+                        before sending money.
+                    </span>
+
+                </div>
+
+
+                <div class="tip">
+
+                    <span class="tip-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Be careful with unusually
+                        large transactions.
+                    </span>
+
+                </div>
+
+
+                <div class="tip">
+
+                    <span class="tip-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Do not trust payment requests
+                        from unknown people.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="security-box">
+
+                🛡️
+
+                <strong>
+                    Security Reminder:
+                </strong>
+
+                ShieldPay AI will never ask for
+                your password, PIN, OTP, CVV,
+                or other authentication credentials.
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             RESULT CARD
+        ========================== -->
+
+        <div class="checker-card result-card">
 
 
             {% if result %}
 
-            <div class="result">
-                Result: {{ result }}
-            </div>
 
-            <div class="risk-score">
-                Risk Score: {{ risk_score }}%
-            </div>
+                <!-- =========================
+                     SAFE
+                ========================== -->
 
-
-            {% if risk_details %}
-
-            <div class="breakdown">
-
-                <h3>
-                    🔎 Risk Factor Breakdown
-                </h3>
+                {% if result == "SAFE" %}
 
 
-                <div class="risk-item">
+                    <div class="result-icon">
+                        🟢
+                    </div>
 
-                    <span>
-                        💰 Amount Risk
-                    </span>
 
-                    <span class="risk-value">
-                        +{{ risk_details.amount_risk }}
-                    </span>
+                    <h2>
+                        Transaction Safe
+                    </h2>
+
+
+                    <div class="risk-number">
+                        {{ risk_score }}%
+                    </div>
+
+
+                    <div class="risk-label">
+                        Calculated Risk Score
+                    </div>
+
+
+                    <div class="risk-bar">
+
+                        <div
+                            class="risk-fill safe-fill"
+                            style="width: {{ risk_score }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-message safe-result">
+
+                        <strong>
+                            Low Risk Detected
+                        </strong>
+
+                        <br><br>
+
+                        This transaction currently
+                        appears to have a low-risk
+                        profile based on the information
+                        provided.
+
+                    </div>
+
+
+
+                    <div class="risk-details">
+
+                        <h3>
+                            📊 Analysis Summary
+                        </h3>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Amount Risk
+                            </span>
+
+                            <span>
+                                Low
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Receiver Information
+                            </span>
+
+                            <span>
+                                Provided
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Bank Information
+                            </span>
+
+                            <span>
+                                Provided
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                <!-- =========================
+                     SUSPICIOUS
+                ========================== -->
+
+                {% elif result == "SUSPICIOUS" %}
+
+
+                    <div class="result-icon">
+                        🟡
+                    </div>
+
+
+                    <h2>
+                        Transaction Suspicious
+                    </h2>
+
+
+                    <div class="risk-number">
+                        {{ risk_score }}%
+                    </div>
+
+
+                    <div class="risk-label">
+                        Calculated Risk Score
+                    </div>
+
+
+                    <div class="risk-bar">
+
+                        <div
+                            class="risk-fill warning-fill"
+                            style="width: {{ risk_score }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-message warning-result">
+
+                        <strong>
+                            Medium Risk Detected
+                        </strong>
+
+                        <br><br>
+
+                        This transaction requires
+                        additional attention. Verify
+                        the receiver and payment details
+                        before proceeding.
+
+                    </div>
+
+
+
+                    <div class="risk-details">
+
+                        <h3>
+                            ⚠️ Review Before Payment
+                        </h3>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Amount Risk
+                            </span>
+
+                            <span>
+                                Elevated
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Receiver
+                            </span>
+
+                            <span>
+                                Verify
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Recommendation
+                            </span>
+
+                            <span>
+                                Review
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                <!-- =========================
+                     FRAUD
+                ========================== -->
+
+                {% else %}
+
+
+                    <div class="result-icon">
+                        🔴
+                    </div>
+
+
+                    <h2>
+                        High Fraud Risk
+                    </h2>
+
+
+                    <div class="risk-number">
+                        {{ risk_score }}%
+                    </div>
+
+
+                    <div class="risk-label">
+                        Calculated Risk Score
+                    </div>
+
+
+                    <div class="risk-bar">
+
+                        <div
+                            class="risk-fill danger-fill"
+                            style="width: {{ risk_score }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-message danger-result">
+
+                        <strong>
+                            High Risk Detected
+                        </strong>
+
+                        <br><br>
+
+                        This transaction has a high
+                        fraud-risk score. Do not proceed
+                        until the receiver and transaction
+                        details have been carefully verified.
+
+                    </div>
+
+
+
+                    <div class="risk-details">
+
+                        <h3>
+                            🚨 Immediate Review Required
+                        </h3>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Risk Level
+                            </span>
+
+                            <span>
+                                HIGH
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Transaction
+                            </span>
+
+                            <span>
+                                Do Not Proceed
+                            </span>
+
+                        </div>
+
+
+                        <div class="risk-item">
+
+                            <span>
+                                Recommendation
+                            </span>
+
+                            <span>
+                                Verify Immediately
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            {% else %}
+
+
+                <!-- =========================
+                     WAITING
+                ========================== -->
+
+                <div
+                    class="result-icon"
+                    style="margin-top:35px;"
+                >
+                    🛡️
+                </div>
+
+
+                <h2>
+                    Awaiting Analysis
+                </h2>
+
+
+                <div class="result-message waiting-result">
+
+                    Enter the transaction details
+                    and click
+
+                    <strong>
+                        Analyze Transaction
+                    </strong>
+
+                    to receive a risk assessment.
 
                 </div>
 
 
-                <div class="risk-item">
+                <div class="risk-details">
 
-                    <span>
-                        👤 Receiver Name Risk
-                    </span>
-
-                    <span class="risk-value">
-                        +{{ risk_details.receiver_risk }}
-                    </span>
-
-                </div>
+                    <h3>
+                        🤖 ShieldPay AI
+                    </h3>
 
 
-                <div class="risk-item">
+                    <div class="risk-item">
 
-                    <span>
-                        🏦 Account Risk
-                    </span>
+                        <span>
+                            System Status
+                        </span>
 
-                    <span class="risk-value">
-                        +{{ risk_details.account_risk }}
-                    </span>
+                        <span>
+                            Ready
+                        </span>
 
-                </div>
-
-
-                <div class="risk-item">
-
-                    <span>
-                        📱 Transaction Type Risk
-                    </span>
-
-                    <span class="risk-value">
-                        +{{ risk_details.type_risk }}
-                    </span>
-
-                </div>
+                    </div>
 
 
-                <div class="risk-item">
+                    <div class="risk-item">
 
-                    <span>
-                        🎯 Purpose Risk
-                    </span>
+                        <span>
+                            Analysis Engine
+                        </span>
 
-                    <span class="risk-value">
-                        +{{ risk_details.purpose_risk }}
-                    </span>
+                        <span>
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <div class="risk-item">
+
+                        <span>
+                            Protection
+                        </span>
+
+                        <span>
+                            Enabled
+                        </span>
+
+                    </div>
 
                 </div>
 
-            </div>
 
             {% endif %}
 
-            {% endif %}
 
         </div>
 
-        {% endif %}
-
-
-        <div class="security-note">
-
-            🛡️ <strong>Security Notice:</strong>
-
-            ShieldPay AI provides a risk assessment based on
-            information available to the system. It is not a
-            guaranteed determination of fraud.
-
-        </div>
 
     </div>
 
-</main>
 
+</div>
 
-<footer>
-
-    Designed by Fatima Sheikh
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,870 +1,770 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+{% extends "base.html" %}
 
-    <meta charset="UTF-8">
+{% block title %}
+    ShieldPay AI - Recovery Case
+{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+{% block extra_css %}
 
-    <title>
-        ShieldPay AI - Recovery Case
-    </title>
+<style>
 
-    <style>
+    .case-page {
+        width: 88%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 0 60px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+    .case-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+    }
+
+    .case-header h1 {
+        font-size: 32px;
+        margin-bottom: 7px;
+    }
+
+    .case-header p {
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        padding: 11px 18px;
+        background: #e2e8f0;
+        color: #334155;
+        text-decoration: none;
+        border-radius: 9px;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .case-id-box {
+        background: #0f172a;
+        color: white;
+        padding: 22px 25px;
+        border-radius: 16px;
+        margin-bottom: 22px;
+    }
+
+    .case-id-box span {
+        color: #94a3b8;
+        font-size: 11px;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .case-id-box strong {
+        font-size: 25px;
+    }
+
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 22px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 17px;
+        padding: 25px;
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+    .card h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        padding: 16px;
+        border-radius: 11px;
+    }
+
+    .info-box span {
+        display: block;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .description {
+        margin-top: 18px;
+        background: #f8fafc;
+        padding: 18px;
+        border-radius: 11px;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 18px;
+    }
+
+    .pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .progress {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .resolved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .progress-area {
+        margin-top: 20px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: #e2e8f0;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #0284c7;
+        border-radius: 20px;
+    }
+
+    .action-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .action-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 11px;
+    }
+
+    .action-info strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .action-info span {
+        color: #64748b;
+        font-size: 11px;
+    }
+
+    .completed {
+        color: #166534;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .action-btn {
+        border: none;
+        padding: 9px 13px;
+        border-radius: 8px;
+        background: #0284c7;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .action-btn:hover {
+        background: #0369a1;
+    }
+
+    .status-form {
+        margin-top: 20px;
+    }
+
+    .status-form label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .status-select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        background: white;
+        margin-bottom: 10px;
+    }
+
+    .status-btn {
+        width: 100%;
+        border: none;
+        padding: 12px;
+        border-radius: 9px;
+        background: #0f172a;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .status-btn:hover {
+        background: #1e293b;
+    }
+
+    .security {
+        margin-top: 22px;
+        padding: 17px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #78350f;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 850px) {
+
+        .main-grid {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
+    }
+
+    @media (max-width: 600px) {
+
+        .case-page {
+            width: 92%;
         }
 
-        header {
-            background: #0f172a;
-            color: white;
-            padding: 18px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .info-grid {
+            grid-template-columns: 1fr;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #38bdf8;
-        }
-
-        .back {
-            color: white;
-            text-decoration: none;
-            border: 1px solid #475569;
-            padding: 10px 16px;
-            border-radius: 8px;
-        }
-
-        .container {
-            width: 86%;
-            max-width: 1100px;
-            margin: 40px auto;
-        }
-
-        .page-heading {
-            margin-bottom: 25px;
-        }
-
-        .page-heading h1 {
-            font-size: 34px;
-            margin-bottom: 8px;
-        }
-
-        .page-heading p {
-            color: #64748b;
-        }
-
-        .case-header {
-            background: white;
-            padding: 25px;
-            border-radius: 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow:
-                0 8px 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-            margin-bottom: 22px;
-        }
-
-        .case-number {
+        .case-header h1 {
             font-size: 27px;
-            font-weight: bold;
         }
 
-        .case-number small {
-            display: block;
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 7px;
-        }
-
-        .status {
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-progress {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .status-resolved {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            box-shadow:
-                0 8px 25px rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-        }
-
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .details {
-            display: grid;
-            gap: 14px;
-        }
-
-        .detail {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .detail strong {
-            display: block;
-            color: #64748b;
-            font-size: 11px;
-            margin-bottom: 6px;
-        }
-
-        .description {
-            line-height: 1.7;
-            color: #475569;
-            background: #f8fafc;
-            padding: 17px;
-            border-radius: 10px;
-        }
-
-        .progress-section {
-            grid-column: 1 / -1;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 14px;
-            background: #e2e8f0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #0284c7;
-            border-radius: 20px;
-            width: {{ progress }}%;
-        }
-
-        .progress-text {
-            margin-top: 10px;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .actions {
-            grid-column: 1 / -1;
-        }
-
-        .action-list {
-            display: grid;
-            gap: 14px;
-        }
-
-        .action-row {
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 17px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .action-info {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-        .action-icon {
-            width: 43px;
-            height: 43px;
-            border-radius: 10px;
-            background: #eff6ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .case-id-box strong {
             font-size: 21px;
-            flex-shrink: 0;
         }
 
-        .action-info strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .action-info span {
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        .completed {
-            background: #dcfce7;
-            color: #166534;
-            padding: 8px 13px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
+        .action-item {
+            align-items: flex-start;
+            flex-direction: column;
         }
 
         .action-btn {
-            background: #0284c7;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .action-btn:hover {
-            background: #0369a1;
-        }
-
-        .file-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .file-input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: #f8fafc;
         }
 
-        .evidence-link {
-            display: inline-block;
-            margin-top: 8px;
-            color: #0284c7;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-        }
+    }
 
-        .evidence-link:hover {
-            text-decoration: underline;
-        }
+</style>
 
-        .status-form {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .status-select {
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            background: white;
-            min-width: 190px;
-        }
-
-        .update-btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 9px;
-            background: #0f172a;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .security {
-            margin-top: 22px;
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #78350f;
-            padding: 18px;
-            border-radius: 12px;
-            line-height: 1.6;
-        }
-
-        footer {
-            margin-top: 50px;
-            background: #0f172a;
-            color: #cbd5e1;
-            text-align: center;
-            padding: 25px;
-        }
-
-        .designer {
-            color: #38bdf8;
-            font-weight: bold;
-        }
-
-        @media (max-width: 750px) {
-
-            .container {
-                width: 92%;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .progress-section,
-            .actions {
-                grid-column: auto;
-            }
-
-            .action-row {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .action-btn,
-            .completed {
-                width: 100%;
-                text-align: center;
-            }
-
-        }
-
-    </style>
-
-</head>
+{% endblock %}
 
 
-<body>
+{% block content %}
+
+<div class="case-page">
 
 
-<header>
-
-    <div class="logo">
-        🛡️ Shield<span>Pay</span> AI
-    </div>
-
-    <a
-        href="/recovery-center/"
-        class="back"
-    >
-        ← Recovery Center
-    </a>
-
-</header>
-
-
-<main class="container">
-
-
-    <div class="page-heading">
-
-        <h1>
-            Recovery Case
-        </h1>
-
-        <p>
-            Track and manage your fraud recovery process.
-        </p>
-
-    </div>
-
+    <!-- HEADER -->
 
     <div class="case-header">
 
-        <div class="case-number">
+        <div>
 
-            <small>
-                CASE ID
-            </small>
+            <h1>
+                Recovery Case
+            </h1>
 
-            🆔 {{ incident.case_id }}
+            <p>
+                Track and manage this reported incident.
+            </p>
 
         </div>
 
-
-        {% if incident.status == "PENDING" %}
-
-            <div class="status status-pending">
-                ⏳ PENDING
-            </div>
-
-        {% elif incident.status == "IN_PROGRESS" %}
-
-            <div class="status status-progress">
-                🔄 IN PROGRESS
-            </div>
-
-        {% elif incident.status == "RESOLVED" %}
-
-            <div class="status status-resolved">
-                ✅ RESOLVED
-            </div>
-
-        {% endif %}
+        <a
+            href="{% url 'recovery_center' %}"
+            class="back-btn"
+        >
+            ← Recovery Center
+        </a>
 
     </div>
 
 
-    <div class="grid">
+    <!-- CASE ID -->
+
+    <div class="case-id-box">
+
+        <span>
+            CASE IDENTIFICATION
+        </span>
+
+        <strong>
+            🆔 {{ incident.case_id }}
+        </strong>
+
+    </div>
 
 
-        <div class="card">
+    <div class="main-grid">
 
-            <h2>
-                🚨 Incident Details
-            </h2>
 
-            <div class="details">
+        <!-- LEFT -->
 
-                <div class="detail">
+        <div>
 
-                    <strong>
-                        INCIDENT TYPE
-                    </strong>
 
-                    {{ incident.incident_type }}
+            <div class="card">
+
+                <h2>
+                    📋 Incident Information
+                </h2>
+
+
+                <div class="info-grid">
+
+
+                    <div class="info-box">
+
+                        <span>
+                            INCIDENT TYPE
+                        </span>
+
+                        {{ incident.incident_type }}
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            TRANSACTION ID
+                        </span>
+
+                        {{ incident.transaction_id|default:"Not provided" }}
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            AMOUNT
+                        </span>
+
+                        {% if incident.amount %}
+                            {{ incident.amount }}
+                        {% else %}
+                            Not provided
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            BANK / PROVIDER
+                        </span>
+
+                        {{ incident.bank|default:"Not provided" }}
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            CREATED
+                        </span>
+
+                        {{ incident.created_at|date:"d M Y, H:i" }}
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span>
+                            CURRENT STATUS
+                        </span>
+
+                        {{ incident.get_status_display }}
+
+                    </div>
+
 
                 </div>
 
 
-                <div class="detail">
+                <div class="description">
 
                     <strong>
-                        TRANSACTION ID
+                        Incident Description
                     </strong>
 
-                    {{ incident.transaction_id|default:"Not provided" }}
-
-                </div>
-
-
-                <div class="detail">
-
-                    <strong>
-                        AMOUNT
-                    </strong>
-
-                    {% if incident.amount %}
-                        {{ incident.amount }}
-                    {% else %}
-                        Not provided
-                    {% endif %}
-
-                </div>
-
-
-                <div class="detail">
-
-                    <strong>
-                        BANK / PROVIDER
-                    </strong>
-
-                    {{ incident.bank|default:"Not provided" }}
-
-                </div>
-
-
-                <div class="detail">
-
-                    <strong>
-                        REPORTED ON
-                    </strong>
-
-                    {{ incident.created_at|date:"d M Y, H:i" }}
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>
-                📝 Description
-            </h2>
-
-            <div class="description">
-
-                {% if incident.description %}
+                    <br><br>
 
                     {{ incident.description }}
 
-                {% else %}
+                </div>
 
-                    No additional description was provided.
+
+            </div>
+
+
+            <!-- RECOVERY ACTIONS -->
+
+            <div class="card" style="margin-top:22px;">
+
+                <h2>
+                    🛡️ Recovery Actions
+                </h2>
+
+
+                <div class="action-list">
+
+
+                    <!-- BANK -->
+
+                    <div class="action-item">
+
+                        <div class="action-info">
+
+                            <strong>
+                                🏦 Report to Bank
+                            </strong>
+
+                            <span>
+                                Mark the bank report as completed.
+                            </span>
+
+                        </div>
+
+
+                        {% if incident.bank_reported %}
+
+                            <div class="completed">
+                                ✓ Completed
+                            </div>
+
+                        {% else %}
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="bank_reported"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn"
+                                >
+                                    Mark Completed
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ACCOUNT -->
+
+                    <div class="action-item">
+
+                        <div class="action-info">
+
+                            <strong>
+                                🔐 Secure Account
+                            </strong>
+
+                            <span>
+                                Mark the account security action.
+                            </span>
+
+                        </div>
+
+
+                        {% if incident.account_secured %}
+
+                            <div class="completed">
+                                ✓ Completed
+                            </div>
+
+                        {% else %}
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="account_secured"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn"
+                                >
+                                    Mark Completed
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- EVIDENCE -->
+
+                    <div class="action-item">
+
+                        <div class="action-info">
+
+                            <strong>
+                                📁 Save Evidence
+                            </strong>
+
+                            <span>
+                                Mark supporting evidence as saved.
+                            </span>
+
+                        </div>
+
+
+                        {% if incident.evidence_saved %}
+
+                            <div class="completed">
+                                ✓ Completed
+                            </div>
+
+                        {% else %}
+
+                            <form method="POST">
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="evidence_saved"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn"
+                                >
+                                    Mark Completed
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div>
+
+
+            <div class="card">
+
+                <h2>
+                    📊 Case Progress
+                </h2>
+
+
+                {% if incident.status == "PENDING" %}
+
+                    <span class="status-badge pending">
+                        ⏳ PENDING
+                    </span>
+
+                {% elif incident.status == "IN_PROGRESS" %}
+
+                    <span class="status-badge progress">
+                        🔄 IN PROGRESS
+                    </span>
+
+                {% elif incident.status == "RESOLVED" %}
+
+                    <span class="status-badge resolved">
+                        ✅ RESOLVED
+                    </span>
 
                 {% endif %}
 
-            </div>
 
-        </div>
+                <div class="progress-area">
 
+                    <div class="progress-label">
 
-        <div class="card progress-section">
+                        <span>
+                            Recovery Progress
+                        </span>
 
-            <h2>
-                📊 Recovery Progress
-            </h2>
-
-            <div class="progress-header">
-
-                <strong>
-                    {{ completed_actions }} of 3 actions completed
-                </strong>
-
-                <strong>
-                    {{ progress }}%
-                </strong>
-
-            </div>
-
-
-            <div class="progress-bar">
-
-                <div class="progress-fill"></div>
-
-            </div>
-
-
-            <div class="progress-text">
-
-                Complete the required recovery actions below.
-
-            </div>
-
-        </div>
-
-
-        <div class="card actions">
-
-            <h2>
-                🛡️ Recovery Actions
-            </h2>
-
-
-            <div class="action-list">
-
-
-                <!-- BANK -->
-
-                <div class="action-row">
-
-                    <div class="action-info">
-
-                        <div class="action-icon">
-                            🏦
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                Report to Bank
-                            </strong>
-
-                            <span>
-                                Notify the bank or payment provider
-                                about the suspected fraud.
-                            </span>
-
-                        </div>
+                        <strong>
+                            {{ progress }}%
+                        </strong>
 
                     </div>
 
 
-                    {% if incident.bank_reported %}
+                    <div class="progress-bar">
 
-                        <div class="completed">
-                            ✓ Completed
-                        </div>
+                        <div
+                            class="progress-fill"
+                            style="width: {{ progress }}%;"
+                        ></div>
 
-                    {% else %}
-
-                        <form method="POST">
-
-                            {% csrf_token %}
-
-                            <input
-                                type="hidden"
-                                name="action"
-                                value="bank_reported"
-                            >
-
-                            <button
-                                type="submit"
-                                class="action-btn"
-                            >
-                                Mark Completed
-                            </button>
-
-                        </form>
-
-                    {% endif %}
+                    </div>
 
                 </div>
 
 
-                <!-- ACCOUNT -->
+                <!-- STATUS -->
 
-                <div class="action-row">
+                <form
+                    method="POST"
+                    class="status-form"
+                >
 
-                    <div class="action-info">
+                    {% csrf_token %}
 
-                        <div class="action-icon">
-                            🔐
-                        </div>
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="status"
+                    >
 
-                        <div>
-
-                            <strong>
-                                Secure Account
-                            </strong>
-
-                            <span>
-                                Secure the affected account and
-                                prevent further unauthorized activity.
-                            </span>
-
-                        </div>
-
-                    </div>
+                    <label>
+                        Update Case Status
+                    </label>
 
 
-                    {% if incident.account_secured %}
+                    <select
+                        name="status"
+                        class="status-select"
+                    >
 
-                        <div class="completed">
-                            ✓ Completed
-                        </div>
-
-                    {% else %}
-
-                        <form method="POST">
-
-                            {% csrf_token %}
-
-                            <input
-                                type="hidden"
-                                name="action"
-                                value="account_secured"
-                            >
-
-                            <button
-                                type="submit"
-                                class="action-btn"
-                            >
-                                Mark Completed
-                            </button>
-
-                        </form>
-
-                    {% endif %}
-
-                </div>
-
-
-                <!-- EVIDENCE -->
-
-                <div class="action-row">
-
-                    <div class="action-info">
-
-                        <div class="action-icon">
-                            📎
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                Save Evidence
-                            </strong>
-
-                            <span>
-                                Upload a screenshot, receipt,
-                                PDF or other supporting evidence.
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    {% if incident.evidence_saved %}
-
-                        <div>
-
-                            <div class="completed">
-                                ✓ Evidence Saved
-                            </div>
-
-                            {% if incident.evidence_file %}
-
-                                <a
-                                    href="{{ incident.evidence_file.url }}"
-                                    target="_blank"
-                                    class="evidence-link"
-                                >
-                                    📎 View Evidence
-                                </a>
-
+                        <option
+                            value="PENDING"
+                            {% if incident.status == "PENDING" %}
+                                selected
                             {% endif %}
-
-                        </div>
-
-                    {% else %}
-
-                        <form
-                            method="POST"
-                            enctype="multipart/form-data"
-                            class="file-form"
                         >
+                            Pending
+                        </option>
 
-                            {% csrf_token %}
 
-                            <input
-                                type="hidden"
-                                name="action"
-                                value="evidence_saved"
-                            >
+                        <option
+                            value="IN_PROGRESS"
+                            {% if incident.status == "IN_PROGRESS" %}
+                                selected
+                            {% endif %}
+                        >
+                            In Progress
+                        </option>
 
-                            <input
-                                type="file"
-                                name="evidence_file"
-                                class="file-input"
-                                required
-                            >
 
-                            <button
-                                type="submit"
-                                class="action-btn"
-                            >
-                                📎 Upload Evidence
-                            </button>
+                        <option
+                            value="RESOLVED"
+                            {% if incident.status == "RESOLVED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Resolved
+                        </option>
 
-                        </form>
+                    </select>
 
-                    {% endif %}
 
-                </div>
+                    <button
+                        type="submit"
+                        class="status-btn"
+                    >
+                        Update Status
+                    </button>
+
+                </form>
 
 
             </div>
 
-        </div>
 
+            <div class="security">
 
-        <div class="card actions">
+                🛡️
 
-            <h2>
-                🔄 Update Case Status
-            </h2>
+                <strong>
+                    Security Reminder:
+                </strong>
 
-            <form
-                method="POST"
-                class="status-form"
-            >
+                Never enter or store passwords,
+                PINs, OTPs or CVVs in recovery
+                case descriptions.
 
-                {% csrf_token %}
+            </div>
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="status"
-                >
-
-                <select
-                    name="status"
-                    class="status-select"
-                >
-
-                    <option
-                        value="PENDING"
-                        {% if incident.status == "PENDING" %}
-                            selected
-                        {% endif %}
-                    >
-                        ⏳ Pending
-                    </option>
-
-                    <option
-                        value="IN_PROGRESS"
-                        {% if incident.status == "IN_PROGRESS" %}
-                            selected
-                        {% endif %}
-                    >
-                        🔄 In Progress
-                    </option>
-
-                    <option
-                        value="RESOLVED"
-                        {% if incident.status == "RESOLVED" %}
-                            selected
-                        {% endif %}
-                    >
-                        ✅ Resolved
-                    </option>
-
-                </select>
-
-
-                <button
-                    type="submit"
-                    class="update-btn"
-                >
-                    Update Status
-                </button>
-
-            </form>
 
         </div>
 
@@ -872,34 +772,6 @@
     </div>
 
 
-    <div class="security">
+</div>
 
-        🛡️
-
-        <strong>
-            Security Reminder:
-        </strong>
-
-        Never share your password, PIN, OTP,
-        CVV or other authentication credentials.
-
-    </div>
-
-
-</main>
-
-
-<footer>
-
-    Designed by
-
-    <span class="designer">
-        Fatima Sheikh
-    </span>
-
-</footer>
-
-
-</body>
-
-</html>
+{% endblock %}

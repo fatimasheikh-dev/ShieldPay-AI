@@ -1,305 +1,615 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+{% extends "base.html" %}
 
-    <meta charset="UTF-8">
+{% block title %}
+    ShieldPay AI - Payment Slip Scanner
+{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
 
-    <title>ShieldPay AI | Payment Slip Scanner</title>
+{% block extra_css %}
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+    .scanner-page {
+        width: 88%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 45px 0 60px;
+    }
+
+
+    .scanner-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+
+    .scanner-icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eff6ff;
+        border-radius: 22px;
+
+        font-size: 38px;
+    }
+
+
+    .scanner-header h1 {
+        font-size: 36px;
+        margin-bottom: 9px;
+    }
+
+
+    .scanner-header p {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+
+    .scanner-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        align-items: start;
+    }
+
+
+    .scanner-card {
+        background: white;
+        border-radius: 18px;
+        padding: 28px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.07);
+    }
+
+
+    .scanner-card h2 {
+        font-size: 21px;
+        margin-bottom: 20px;
+    }
+
+
+    .upload-area {
+        border: 2px dashed #cbd5e1;
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        background: #f8fafc;
+
+        transition:
+            border-color 0.2s ease,
+            background 0.2s ease;
+    }
+
+
+    .upload-area:hover {
+        border-color: #0284c7;
+        background: #f0f9ff;
+    }
+
+
+    .upload-icon {
+        font-size: 50px;
+        margin-bottom: 12px;
+    }
+
+
+    .upload-area h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+
+    .upload-area p {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+
+    .file-input {
+        width: 100%;
+        padding: 12px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+
+        background: white;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+
+    .scan-button {
+        width: 100%;
+        margin-top: 18px;
+
+        padding: 14px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: #0284c7;
+        color: white;
+
+        font-size: 15px;
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .scan-button:hover {
+        background: #0369a1;
+        transform: translateY(-1px);
+    }
+
+
+    .result-card {
+        min-height: 350px;
+    }
+
+
+    .result-empty {
+        text-align: center;
+        padding: 55px 20px;
+        color: #64748b;
+    }
+
+
+    .result-empty-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+
+    .result-empty h3 {
+        color: #334155;
+        margin-bottom: 8px;
+        font-size: 20px;
+    }
+
+
+    .result-empty p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    .result-success {
+        text-align: center;
+    }
+
+
+    .success-icon {
+        width: 70px;
+        height: 70px;
+
+        margin: 5px auto 15px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #dcfce7;
+        color: #166534;
+
+        border-radius: 50%;
+
+        font-size: 34px;
+    }
+
+
+    .result-success h2 {
+        font-size: 23px;
+        margin-bottom: 10px;
+    }
+
+
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+
+        padding: 16px;
+
+        border-radius: 11px;
+
+        font-size: 14px;
+        line-height: 1.6;
+
+        margin-top: 18px;
+    }
+
+
+    .verification-box {
+        margin-top: 20px;
+
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+
+        color: #78350f;
+
+        padding: 16px;
+
+        border-radius: 11px;
+
+        text-align: left;
+
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 15px;
+
+        margin-top: 25px;
+    }
+
+
+    .feature {
+        background: #f8fafc;
+        border-radius: 12px;
+
+        padding: 18px;
+
+        text-align: center;
+    }
+
+
+    .feature-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+
+    .feature h4 {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+
+    .feature p {
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+
+    .security-note {
+        margin-top: 25px;
+
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+
+        color: #1e40af;
+
+        padding: 17px;
+
+        border-radius: 11px;
+
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+
+    @media (max-width: 800px) {
+
+        .scanner-grid {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #172033;
+        .features {
+            grid-template-columns: 1fr;
         }
 
-        header {
-            background: #0b1f3a;
-            color: white;
-            padding: 22px 7%;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .scanner-page {
+            width: 92%;
+            padding-top: 25px;
         }
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
+        .scanner-header h1 {
+            font-size: 29px;
         }
 
-        .tagline {
-            margin-top: 5px;
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        main {
-            width: 90%;
-            max-width: 950px;
-            margin: 40px auto;
-        }
-
-        .back {
-            display: inline-block;
-            margin-bottom: 25px;
-            text-decoration: none;
-            color: #0b1f3a;
-            font-weight: bold;
-        }
-
-        .card {
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.07);
-        }
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .intro {
-            color: #667085;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .upload-box {
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            background: #f8fafc;
-        }
-
-        .upload-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-
-        .upload-box h3 {
-            margin-bottom: 8px;
-        }
-
-        .upload-box p {
-            color: #667085;
-        }
-
-        input[type="file"] {
-            margin: 22px 0;
-            max-width: 100%;
-        }
-
-        .scan-btn {
-            display: block;
-            margin: 10px auto 0;
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            background: #0b1f3a;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .scan-btn:hover {
-            opacity: 0.9;
-        }
-
-        .message {
-            margin-top: 25px;
-            padding: 15px;
-            background: #eef4ff;
-            border-radius: 10px;
-            color: #344054;
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 25px;
-            background: #f8fafc;
-            border-radius: 15px;
-        }
-
-        .result h2 {
-            margin-bottom: 15px;
-        }
-
-        .result pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            background: white;
+        .scanner-card {
             padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #e4e7ec;
-            line-height: 1.6;
-            color: #344054;
         }
 
-        .note {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            border-radius: 10px;
-            color: #7c2d12;
-            font-size: 13px;
-            line-height: 1.6;
+        .upload-area {
+            padding: 30px 15px;
         }
 
-        footer {
-            text-align: center;
-            padding: 35px;
-            color: #667085;
-            font-size: 14px;
-        }
+    }
 
-    </style>
+</style>
 
-</head>
+{% endblock %}
 
 
-<body>
+
+{% block content %}
+
+<div class="scanner-page">
 
 
-<header>
+    <!-- HEADER -->
 
-    <div class="logo">
-        ShieldPay AI
-    </div>
+    <div class="scanner-header">
 
-    <div class="tagline">
-        AI-Powered Transaction Protection
-    </div>
-
-</header>
-
-
-<main>
-
-    <a
-        href="/"
-        class="back"
-    >
-        ← Back to Dashboard
-    </a>
-
-
-    <div class="card">
+        <div class="scanner-icon">
+            📄
+        </div>
 
         <h1>
-            📷 Payment Slip Scanner
+            Payment Slip Scanner
         </h1>
 
-        <p class="intro">
-            Upload a payment receipt or transaction slip.
-            ShieldPay AI will scan the image and extract
-            visible transaction information using OCR.
+        <p>
+            Upload a payment receipt for
+            ShieldPay AI verification and analysis.
         </p>
 
-
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-        >
-
-            {% csrf_token %}
+    </div>
 
 
-            <div class="upload-box">
 
-                <div class="upload-icon">
-                    📄
+    <div class="scanner-grid">
+
+
+        <!-- UPLOAD CARD -->
+
+        <div class="scanner-card">
+
+            <h2>
+                📎 Upload Payment Slip
+            </h2>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+
+                <div class="upload-area">
+
+                    <div class="upload-icon">
+                        🧾
+                    </div>
+
+
+                    <h3>
+                        Select your payment slip
+                    </h3>
+
+
+                    <p>
+                        Upload a clear image or PDF
+                        of your payment receipt.
+                    </p>
+
+
+                    <input
+                        type="file"
+                        name="slip"
+                        class="file-input"
+                        accept=".jpg,.jpeg,.png,.pdf"
+                        required
+                    >
+
                 </div>
-
-                <h3>
-                    Upload Payment Slip
-                </h3>
-
-                <p>
-                    Supported formats: JPG, JPEG, PNG
-                </p>
-
-
-                <input
-                    type="file"
-                    name="slip_image"
-                    accept=".jpg,.jpeg,.png"
-                    required
-                >
 
 
                 <button
                     type="submit"
-                    class="scan-btn"
+                    class="scan-button"
                 >
                     🔍 Scan Payment Slip
                 </button>
 
+
+            </form>
+
+
+            <div class="security-note">
+
+                🛡️
+
+                <strong>
+                    Privacy & Security:
+                </strong>
+
+                Never upload documents containing
+                passwords, PINs, OTPs or other
+                authentication credentials.
+
             </div>
 
-        </form>
+        </div>
 
 
-        {% if message %}
 
-            <div class="message">
-                {{ message }}
-            </div>
+        <!-- RESULT CARD -->
 
-        {% endif %}
+        <div class="scanner-card result-card">
 
-
-        {% if extracted_text %}
-
-            <div class="result">
-
-                <h2>
-                    🧠 Extracted Information
-                </h2>
-
-                <pre>{{ extracted_text }}</pre>
+            <h2>
+                🤖 Scan Result
+            </h2>
 
 
-                <div class="note">
+            {% if result %}
 
-                    🛡️ <strong>Security Notice:</strong>
 
-                    OCR only reads visible text from the
-                    uploaded image. Always verify important
-                    payment information with the original
-                    receipt and your bank/payment provider.
+                <div class="result-success">
+
+                    <div class="success-icon">
+                        ✓
+                    </div>
+
+
+                    <h2>
+                        Slip Received
+                    </h2>
+
+
+                    <div class="success-message">
+
+                        {{ result }}
+
+                    </div>
+
+
+                    <div class="verification-box">
+
+                        ⚠️
+
+                        <strong>
+                            Important:
+                        </strong>
+
+                        Uploading a slip does not
+                        prove that a payment is genuine.
+                        Always verify the transaction
+                        directly through your bank or
+                        payment provider.
+
+                    </div>
 
                 </div>
 
-            </div>
 
-        {% endif %}
+            {% else %}
 
+
+                <div class="result-empty">
+
+                    <div class="result-empty-icon">
+                        🔍
+                    </div>
+
+
+                    <h3>
+                        Waiting for a slip
+                    </h3>
+
+
+                    <p>
+                        Upload a payment slip from
+                        the left panel and click
+                        <strong>
+                            Scan Payment Slip
+                        </strong>
+                        to begin verification.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
 
     </div>
 
-</main>
 
 
-<footer>
+    <!-- FEATURES -->
 
-    Designed by Fatima Sheikh
+    <div class="scanner-card" style="margin-top: 25px;">
 
-</footer>
+        <h2>
+            ✨ Scanner Features
+        </h2>
 
 
-</body>
+        <div class="features">
 
-</html>
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📷
+                </div>
+
+                <h4>
+                    Image Support
+                </h4>
+
+                <p>
+                    Supports JPG, JPEG and PNG
+                    payment receipt images.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📄
+                </div>
+
+                <h4>
+                    PDF Support
+                </h4>
+
+                <p>
+                    Payment receipts saved as
+                    PDF files can also be uploaded.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🛡️
+                </div>
+
+                <h4>
+                    Fraud Awareness
+                </h4>
+
+                <p>
+                    Helps users identify that a
+                    receipt should be verified.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
